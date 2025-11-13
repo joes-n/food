@@ -1,0 +1,415 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  customer
+  restaurant_owner
+  driver
+  admin
+}
+
+enum OrderStatus {
+  pending
+  confirmed
+  preparing
+  ready_for_pickup
+  out_for_delivery
+  delivered
+  cancelled
+}
+
+enum PaymentMethod {
+  card
+  digital_wallet
+  cash_on_delivery
+}
+
+enum PaymentStatus {
+  pending
+  completed
+  failed
+  refunded
+}
+
+enum DeliveryStatus {
+  assigned
+  picked_up
+  in_transit
+  delivered
+  cancelled
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      UserRole
+  phone     String?
+  avatar    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships
+  restaurants        Restaurant[]        @relation("RestaurantOwner")
+  orders             Order[]
+  reviews            Review[]
+  favorites          Favorite[]
+  driverDeliveries   Delivery[]          @relation("DriverDeliveries")
+  deliveredOrders    Order[]             @relation("OrderDriver")
+  sentMessages       ChatMessage[]       @relation("SentMessages")
+  receivedMessages   ChatMessage[]       @relation("ReceivedMessages")
+
+  @@index([email])
+  @@index([role])
+}
+
+model Restaurant {
+  id                  String         @id @default(uuid())
+  name                String
+  description         String
+  logo                String?
+  banner              String?
+  cuisine             String
+  rating              Float          @default(0)
+  totalReviews        Int            @default(0)
+  priceRange          String         // budget, medium, premium
+  address             String
+  latitude            Float?
+  longitude           Float?
+  phone               String?
+  email               String?
+  ownerId             String
+  isActive            Boolean        @default(true)
+  isOpen              Boolean        @default(false)
+  deliveryFee         Float          @default(0)
+  minOrderAmount      Float          @default(0)
+  estimatedDeliveryTime Int         // in minutes
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+
+  // Relationships
+  owner               User           @relation("RestaurantOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  categories          MenuCategory[]
+  orders              Order[]
+  reviews             Review[]
+  favorites           Favorite[]
+  operatingHours      OperatingHours[]
+  deliveries          Delivery[]
+
+  @@index([ownerId])
+  @@index([isActive])
+  @@index([cuisine])
+}
+
+model OperatingHours {
+  id            String     @id @default(uuid())
+  restaurantId  String
+  dayOfWeek     Int        // 0 = Sunday, 1 = Monday, etc.
+  openTime      String     // HH:MM format
+  closeTime     String     // HH:MM format
+  isClosed      Boolean    @default(false)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  // Relationships
+  restaurant    Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+
+  @@unique([restaurantId, dayOfWeek])
+  @@index([restaurantId])
+}
+
+model MenuCategory {
+  id            String     @id @default(uuid())
+  restaurantId  String
+  name          String
+  description   String?
+  order         Int
+  isActive      Boolean    @default(true)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  // Relationships
+  restaurant    Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  items         MenuItem[]
+
+  @@index([restaurantId])
+  @@index([isActive])
+}
+
+model MenuItem {
+  id              String                  @id @default(uuid())
+  restaurantId    String
+  categoryId      String
+  name            String
+  description     String
+  price           Float
+  image           String?
+  isAvailable     Boolean                 @default(true)
+  preparationTime Int?                    // in minutes
+  createdAt       DateTime                @default(now())
+  updatedAt       DateTime                @updatedAt
+
+  // Relationships
+  restaurant      Restaurant              @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  category        MenuCategory            @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  customizations  MenuItemCustomization[]
+  orderItems      OrderItem[]
+
+  @@index([restaurantId])
+  @@index([categoryId])
+  @@index([isAvailable])
+}
+
+model MenuItemCustomization {
+  id            String                @id @default(uuid())
+  menuItemId    String
+  name          String
+  type          String                // single, multiple
+  required      Boolean               @default(false)
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
+
+  // Relationships
+  menuItem      MenuItem              @relation(fields: [menuItemId], references: [id], onDelete: Cascade)
+  options       CustomizationOption[]
+
+  @@index([menuItemId])
+}
+
+model CustomizationOption {
+  id                         String                  @id @default(uuid())
+  menuItemCustomizationId    String
+  name                       String
+  priceModifier              Float                   @default(0) // additional cost (can be negative)
+  createdAt                  DateTime                @default(now())
+  updatedAt                  DateTime                @updatedAt
+
+  // Relationships
+  customization              MenuItemCustomization   @relation(fields: [menuItemCustomizationId], references: [id], onDelete: Cascade)
+  selectedCustomizations     SelectedCustomization[]
+
+  @@index([menuItemCustomizationId])
+}
+
+model Order {
+  id                String        @id @default(uuid())
+  customerId        String
+  restaurantId      String
+  driverId          String?
+  orderNumber       Int           @default(autoincrement())
+  subtotal          Float
+  deliveryFee       Float
+  discount          Float         @default(0)
+  tax               Float         @default(0)
+  total             Float
+  status            OrderStatus   @default(pending)
+  paymentMethod     PaymentMethod
+  paymentStatus     PaymentStatus @default(pending)
+  deliveryStreet    String
+  deliveryCity      String
+  deliveryState     String
+  deliveryZipCode   String
+  deliveryCountry   String
+  deliveryLatitude  Float?
+  deliveryLongitude Float?
+  deliveryInstructions String?
+  scheduledFor      DateTime?
+  notes             String?
+  estimatedDeliveryTime DateTime?
+  actualDeliveryTime DateTime?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  // Relationships
+  customer          User          @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  restaurant        Restaurant    @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  driver            User?         @relation("OrderDriver", fields: [driverId], references: [id])
+  items             OrderItem[]
+  payment           Payment?
+  delivery          Delivery?
+  review            Review?
+
+  @@index([customerId])
+  @@index([restaurantId])
+  @@index([driverId])
+  @@index([status])
+  @@index([createdAt])
+  @@index([paymentStatus])
+}
+
+model OrderItem {
+  id            String                 @id @default(uuid())
+  orderId       String
+  menuItemId    String
+  menuItemName  String
+  price         Float
+  quantity      Int
+  subtotal      Float
+  createdAt     DateTime               @default(now())
+  updatedAt     DateTime               @updatedAt
+
+  // Relationships
+  order         Order                  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  menuItem      MenuItem               @relation(fields: [menuItemId], references: [id])
+  customizations SelectedCustomization[]
+
+  @@index([orderId])
+  @@index([menuItemId])
+}
+
+model SelectedCustomization {
+  id                      String          @id @default(uuid())
+  orderItemId             String
+  customizationId         String
+  optionId                String
+  optionName              String
+  priceModifier           Float           @default(0)
+  createdAt               DateTime        @default(now())
+  updatedAt               DateTime        @updatedAt
+
+  // Relationships
+  orderItem               OrderItem       @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+  customization           MenuItemCustomization @relation(fields: [customizationId], references: [id])
+  option                  CustomizationOption  @relation(fields: [optionId], references: [id])
+
+  @@index([orderItemId])
+}
+
+model Payment {
+  id              String        @id @default(uuid())
+  orderId         String        @unique
+  amount          Float
+  paymentMethod   PaymentMethod
+  paymentStatus   PaymentStatus @default(pending)
+  transactionId   String?       // External payment gateway ID
+  paymentIntentId String?
+  paidAt          DateTime?
+  refundedAt      DateTime?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  // Relationships
+  order           Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([paymentStatus])
+  @@index([transactionId])
+}
+
+model Delivery {
+  id                String         @id @default(uuid())
+  orderId           String         @unique
+  driverId          String
+  pickupTime        DateTime?
+  deliveryTime      DateTime?
+  status            DeliveryStatus @default(assigned)
+  distance          Float?         // in km
+  estimatedDuration Int?           // in minutes
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  // Relationships
+  order             Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  driver            User           @relation("DriverDeliveries", fields: [driverId], references: [id])
+  route             DeliveryRoute?
+
+  @@index([driverId])
+  @@index([status])
+}
+
+model DeliveryRoute {
+  id              String  @id @default(uuid())
+  deliveryId      String  @unique
+  pickupLatitude  Float
+  pickupLongitude Float
+  destLatitude    Float
+  destLongitude   Float
+  distance        Float
+  duration        Int
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relationships
+  delivery        Delivery @relation(fields: [deliveryId], references: [id], onDelete: Cascade)
+}
+
+model Review {
+  id            String   @id @default(uuid())
+  orderId       String   @unique
+  customerId    String
+  restaurantId  String
+  rating        Int      // 1-5
+  comment       String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relationships
+  order         Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  customer      User     @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  restaurant    Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+
+  @@index([customerId])
+  @@index([restaurantId])
+  @@index([rating])
+}
+
+model Favorite {
+  id            String   @id @default(uuid())
+  customerId    String
+  restaurantId  String
+  createdAt     DateTime @default(now())
+
+  // Relationships
+  customer      User     @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  restaurant    Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+
+  @@unique([customerId, restaurantId])
+  @@index([customerId])
+  @@index([restaurantId])
+}
+
+model ChatMessage {
+  id          String   @id @default(uuid())
+  senderId    String
+  receiverId  String
+  message     String
+  createdAt   DateTime @default(now())
+  readAt      DateTime?
+
+  // Relationships
+  sender      User     @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver    User     @relation("ReceivedMessages", fields: [receiverId], references: [id], onDelete: Cascade)
+
+  @@index([senderId])
+  @@index([receiverId])
+  @@index([createdAt])
+}
+
+model PromoCode {
+  id              String   @id @default(uuid())
+  code            String   @unique
+  description     String?
+  type            String   // percentage, fixed_amount
+  value           Float
+  minOrderAmount  Float?
+  maxUses         Int?
+  usedCount       Int      @default(0)
+  validFrom       DateTime
+  validUntil      DateTime
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([isActive])
+  @@index([code])
+  @@index([validFrom, validUntil])
+}
