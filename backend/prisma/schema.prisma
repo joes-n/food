@@ -100,11 +100,11 @@ model Restaurant {
   // Relationships
   owner               User           @relation("RestaurantOwner", fields: [ownerId], references: [id], onDelete: Cascade)
   categories          MenuCategory[]
+  menuItems           MenuItem[]
   orders              Order[]
   reviews             Review[]
   favorites           Favorite[]
   operatingHours      OperatingHours[]
-  deliveries          Delivery[]
 
   @@index([ownerId])
   @@index([isActive])
@@ -180,8 +180,9 @@ model MenuItemCustomization {
   updatedAt     DateTime              @updatedAt
 
   // Relationships
-  menuItem      MenuItem              @relation(fields: [menuItemId], references: [id], onDelete: Cascade)
-  options       CustomizationOption[]
+  menuItem               MenuItem              @relation(fields: [menuItemId], references: [id], onDelete: Cascade)
+  options                CustomizationOption[]
+  selectedCustomizations SelectedCustomization[]
 
   @@index([menuItemId])
 }
