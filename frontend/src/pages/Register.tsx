@@ -64,8 +64,7 @@ export function Register() {
     <div className="min-h-screen flex items-center justify-center bg-gray-100 py-12 px-4">
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-primary-600 mb-2">FoodOrder</h1>
-          <h2 className="text-2xl font-bold text-gray-900">Create your account</h2>
+          <h1 className="text-2xl font-bold text-gray-900">Create your account</h1>
           <p className="text-gray-600 mt-2">
             Already have an account?{' '}
             <Link to="/login" className="text-primary-600 hover:text-primary-700 font-semibold">
@@ -77,7 +76,7 @@ export function Register() {
         <div className="bg-white rounded-lg shadow-md p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="label">Full Name</label>
+              <label className="label">Name</label>
               <input
                 type="text"
                 name="name"
@@ -85,7 +84,6 @@ export function Register() {
                 value={formData.name}
                 onChange={handleChange}
                 required
-                placeholder="John Doe"
               />
             </div>
 
@@ -98,19 +96,18 @@ export function Register() {
                 value={formData.email}
                 onChange={handleChange}
                 required
-                placeholder="you@example.com"
               />
             </div>
 
             <div>
-              <label className="label">Phone (Optional)</label>
+              <label className="label">Phone</label>
               <input
                 type="tel"
                 name="phone"
                 className="input"
                 value={formData.phone}
                 onChange={handleChange}
-                placeholder="+1234567890"
+                required
               />
             </div>
 
@@ -138,7 +135,6 @@ export function Register() {
                 value={formData.password}
                 onChange={handleChange}
                 required
-                placeholder="••••••••"
                 minLength={8}
               />
             </div>
@@ -152,7 +148,6 @@ export function Register() {
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 required
-                placeholder="••••••••"
                 minLength={8}
               />
             </div>
