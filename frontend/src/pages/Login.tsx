@@ -29,7 +29,12 @@ export function Login() {
       if (response.success) {
         login(response.data.token, response.data.user);
         toast.success('Login successful!');
-        navigate('/');
+        // Redirect based on user role
+        if (response.data.user.role === 'restaurant_owner') {
+          navigate('/owner/dashboard');
+        } else {
+          navigate('/');
+        }
       }
     } catch (error: any) {
       toast.error(error.response?.data?.error || 'Login failed');
@@ -42,8 +47,7 @@ export function Login() {
     <div className="min-h-screen flex items-center justify-center bg-gray-100 py-12 px-4">
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-primary-600 mb-2">FoodOrder</h1>
-          <h2 className="text-2xl font-bold text-gray-900">Sign in to your account</h2>
+          <h1 className="text-2xl font-bold text-gray-900">Sign in to your account</h1>
           <p className="text-gray-600 mt-2">
             Don't have an account?{' '}
             <Link to="/register" className="text-primary-600 hover:text-primary-700 font-semibold">
