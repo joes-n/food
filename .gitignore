@@ -66,3 +66,6 @@ backend/prisma/migrations/
 # Temporary files
 *.tmp
 *.temp
+
+# npm package lock files
+package-lock.json
