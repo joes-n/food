@@ -54,7 +54,10 @@ psql --version    # Should be 15 or higher
 
 3. **Configure environment variables**:
    ```bash
-   cp .env.example .env
+CREATE DATABASE food_ordering_db;
+   CREATE USER food_user WITH ENCRYPTED PASSWORD 'your_password';
+   GRANT ALL PRIVILEGES ON DATABASE food_ordering_db TO food_user;
+   \q   cp .env.example .env
    ```
    Edit `.env` file and update:
    ```env
@@ -84,6 +87,7 @@ psql --version    # Should be 15 or higher
    npm run dev
    ```
    Backend will be available at: http://localhost:5000
+   You should see {"error":{"message":"Route not found"}} indicating a 404 error
 
    Test with:
    ```bash
