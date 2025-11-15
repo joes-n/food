@@ -47,6 +47,9 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Serve uploaded files
+app.use('/uploads', express.static('uploads'));
+
 // Create logs directory if it doesn't exist
 import fs from 'fs';
 if (!fs.existsSync('logs')) {
@@ -57,8 +60,12 @@ if (!fs.existsSync('logs')) {
 import authRoutes from './routes/authRoutes';
 import restaurantRoutes from './routes/restaurantRoutes';
 import menuRoutes from './routes/menuRoutes';
+import menuItemRoutes from './routes/menuItemRoutes';
 import orderRoutes from './routes/orderRoutes';
+import orderManagementRoutes from './routes/orderManagementRoutes';
 import paymentRoutes from './routes/paymentRoutes';
+import uploadRoutes from './routes/uploadRoutes';
+import restaurantStatsRoutes from './routes/restaurantStatsRoutes';
 
 app.get('/api/health', (req, res) => {
   res.json({
@@ -72,8 +79,12 @@ app.get('/api/health', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/restaurants', restaurantRoutes);
 app.use('/api/menu', menuRoutes);
+app.use('/api/menu-items', menuItemRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/orders/manage', orderManagementRoutes);
 app.use('/api/payment', paymentRoutes);
+app.use('/api/upload', uploadRoutes);
+app.use('/api/stats', restaurantStatsRoutes);
 
 // Socket.io connection handling
 io.on('connection', (socket) => {
