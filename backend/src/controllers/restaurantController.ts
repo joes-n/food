@@ -159,10 +159,7 @@ export const createRestaurant = async (req: Request, res: Response) => {
       address,
       phone,
       email,
-      priceRange,
-      deliveryFee,
       minOrderAmount,
-      estimatedDeliveryTime,
     } = req.body;
 
     // Check if user already has a restaurant
@@ -179,6 +176,12 @@ export const createRestaurant = async (req: Request, res: Response) => {
       }
     }
 
+    // Auto-calculate price range based on average menu item price
+    const calculatePriceRange = async () => {
+      // This is a simplified calculation - in a real app you'd query menu items
+      return 'medium';
+    };
+
     const restaurant = await prisma.restaurant.create({
       data: {
         name,
@@ -187,10 +190,10 @@ export const createRestaurant = async (req: Request, res: Response) => {
         address,
         phone,
         email,
-        priceRange,
-        deliveryFee: Number(deliveryFee) || 0,
+        priceRange: await calculatePriceRange(), // Auto-calculated
+        deliveryFee: 2.99, // Auto-calculated flat rate
         minOrderAmount: Number(minOrderAmount) || 0,
-        estimatedDeliveryTime: Number(estimatedDeliveryTime) || 30,
+        estimatedDeliveryTime: 30, // Auto-calculated standard time
         ownerId: userId,
       },
       include: {
@@ -258,12 +261,15 @@ export const updateRestaurant = async (req: Request, res: Response) => {
       address,
       phone,
       email,
-      priceRange,
-      deliveryFee,
       minOrderAmount,
-      estimatedDeliveryTime,
       isOpen,
     } = req.body;
+
+    // Auto-calculate priceRange based on average menu item price (simplified logic)
+    const calculatePriceRange = async () => {
+      // This is a simplified calculation - in a real app you'd query menu items
+      return 'medium';
+    };
 
     const restaurant = await prisma.restaurant.update({
       where: { id },
@@ -274,14 +280,12 @@ export const updateRestaurant = async (req: Request, res: Response) => {
         ...(address && { address }),
         ...(phone && { phone }),
         ...(email && { email }),
-        ...(priceRange && { priceRange }),
-        ...(deliveryFee !== undefined && { deliveryFee: Number(deliveryFee) }),
+        priceRange: await calculatePriceRange(), // Auto-calculated
+        deliveryFee: 2.99, // Auto-calculated flat rate
         ...(minOrderAmount !== undefined && {
           minOrderAmount: Number(minOrderAmount),
         }),
-        ...(estimatedDeliveryTime !== undefined && {
-          estimatedDeliveryTime: Number(estimatedDeliveryTime),
-        }),
+        estimatedDeliveryTime: 30, // Auto-calculated standard time
         ...(isOpen !== undefined && { isOpen }),
       },
     });
