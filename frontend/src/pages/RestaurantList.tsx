@@ -98,29 +98,16 @@ export function RestaurantList() {
                   className="w-full h-48 object-cover rounded-t-lg -m-6 mb-4"
                 />
               )}
-              <div className="flex items-start justify-between mb-2">
-                <h3 className="text-xl font-bold">{restaurant.name}</h3>
-                <span className="text-sm font-semibold text-green-600">
+              <h3 className="text-xl font-bold mb-2">{restaurant.name}</h3>
+              <p className="text-gray-600 mb-2">{restaurant.cuisine}</p>
+              <div className="flex items-center">
+                <span className="text-sm font-semibold text-green-600 mr-2">
                   {restaurant.rating.toFixed(1)} ★
                 </span>
-              </div>
-              <p className="text-gray-600 mb-2">{restaurant.cuisine}</p>
-              <p className="text-gray-500 text-sm mb-4 line-clamp-2">
-                {restaurant.description}
-              </p>
-              <div className="flex justify-between items-center text-sm">
-                <span className="text-gray-600">
-                  {restaurant.estimatedDeliveryTime} min delivery
-                </span>
-                <span className="font-semibold">
-                  ${restaurant.deliveryFee} delivery fee
+                <span className="text-gray-500 text-sm">
+                  ({restaurant.totalReviews} reviews)
                 </span>
               </div>
-              {!restaurant.isOpen && (
-                <div className="mt-2 p-2 bg-red-100 text-red-700 rounded text-sm">
-                  Currently closed
-                </div>
-              )}
             </Link>
           ))}
         </div>
