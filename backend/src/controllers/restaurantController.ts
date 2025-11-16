@@ -184,6 +184,7 @@ export const createRestaurant = async (req: Request, res: Response) => {
 
     const restaurant = await prisma.restaurant.create({
       data: {
+        id: name, // Use name as ID
         name,
         description,
         cuisine,
