@@ -228,6 +228,12 @@ export const updateRestaurant = async (req: Request, res: Response) => {
     const userId = req.user?.id;
     const userRole = req.user?.role;
 
+    // Debug logging
+    console.log('Update restaurant request:');
+    console.log('id:', id);
+    console.log('userId:', userId);
+    console.log('req.body:', req.body);
+
     if (!userId) {
       return res.status(401).json({
         success: false,
@@ -264,6 +270,7 @@ export const updateRestaurant = async (req: Request, res: Response) => {
       email,
       minOrderAmount,
       isOpen,
+      banner,
     } = req.body;
 
     // Auto-calculate priceRange based on average menu item price (simplified logic)
@@ -281,6 +288,7 @@ export const updateRestaurant = async (req: Request, res: Response) => {
         ...(address && { address }),
         ...(phone && { phone }),
         ...(email && { email }),
+        ...(banner !== undefined && { banner }),
         priceRange: await calculatePriceRange(), // Auto-calculated
         deliveryFee: 2.99, // Auto-calculated flat rate
         ...(minOrderAmount !== undefined && {
