@@ -12,17 +12,23 @@ export function Login() {
     password: '',
   });
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
+    // Clear error message when user starts typing
+    if (errorMessage) {
+      setErrorMessage('');
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setErrorMessage('');
 
     try {
       const response = await authService.login(formData);
@@ -37,7 +43,22 @@ export function Login() {
         }
       }
     } catch (error: any) {
-      toast.error(error.response?.data?.error || 'Login failed');
+      // The API returns { success: false, error: "Invalid email or password" }
+      // axios wraps this in error.response.data
+      const errorMsg = error.response?.data?.error || error.response?.data?.message || 'Login failed';
+      // Show "Incorrect password" for authentication errors (no account or wrong password)
+      if (
+        errorMsg.toLowerCase().includes('invalid') ||
+        errorMsg.toLowerCase().includes('incorrect') ||
+        errorMsg.toLowerCase().includes('credentials') ||
+        errorMsg.toLowerCase().includes('password') ||
+        errorMsg.toLowerCase().includes('email') ||
+        errorMsg.toLowerCase().includes('not found')
+      ) {
+        setErrorMessage('Incorrect password');
+      } else {
+        setErrorMessage(errorMsg);
+      }
     } finally {
       setLoading(false);
     }
@@ -83,6 +104,13 @@ export function Login() {
                 placeholder="••••••••"
               />
             </div>
+
+            {/* Error message */}
+            {errorMessage && (
+              <div className="text-red-600 text-sm font-medium">
+                {errorMessage}
+              </div>
+            )}
 
             <button
               type="submit"
