@@ -51,7 +51,7 @@ Order
 - `role`: User type (customer, restaurant_owner, driver, admin)
 
 **Relationships**:
-- One-to-Many with Restaurant (owner)
+- One-to-One with Restaurant (owner)
 - One-to-Many with Order (customer)
 - One-to-Many with Review
 - One-to-Many with Favorite
