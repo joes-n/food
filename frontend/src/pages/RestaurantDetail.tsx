@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { restaurantService, Restaurant, MenuItem } from '../services/restaurantService';
 import { SelectedCustomization } from '../store/cartStore';
 import { useCart } from '../contexts/CartContext';
 import { toast } from 'react-toastify';
-import { Plus, Minus } from 'lucide-react';
+import { Plus, Minus, ArrowLeft } from 'lucide-react';
 
 export function RestaurantDetail() {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const [restaurant, setRestaurant] = useState<Restaurant | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
@@ -76,6 +77,15 @@ export function RestaurantDetail() {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      {/* Back button */}
+      <button
+        onClick={() => navigate('/restaurants')}
+        className="mb-6 flex items-center gap-2 text-primary-600 hover:text-primary-700 font-medium"
+      >
+        <ArrowLeft size={20} />
+        Back to Restaurants
+      </button>
+
       {/* Restaurant header */}
       <div className="bg-white rounded-lg shadow-md p-6 mb-8">
         <div className="flex items-start justify-between mb-4">
