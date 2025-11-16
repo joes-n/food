@@ -77,9 +77,6 @@ export function Earnings() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-6">
-        <Link to="/owner/dashboard" className="text-primary-600 hover:text-primary-700">
-          ← Back to Dashboard
-        </Link>
         <h1 className="text-4xl font-bold mt-2">Earnings & Statistics</h1>
       </div>
 
