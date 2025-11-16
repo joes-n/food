@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { restaurantService, Restaurant, MenuItem, SelectedCustomization } from '../services/restaurantService';
+import { restaurantService, Restaurant, MenuItem } from '../services/restaurantService';
+import { SelectedCustomization } from '../store/cartStore';
 import { useCart } from '../contexts/CartContext';
 import { toast } from 'react-toastify';
 import { Plus, Minus } from 'lucide-react';
