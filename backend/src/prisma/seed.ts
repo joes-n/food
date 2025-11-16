@@ -83,13 +83,20 @@ async function main() {
 
   console.log('✅ Created restaurant owners');
 
+  // Delete existing restaurants and related data
+  await prisma.menuItem.deleteMany({});
+  await prisma.menuCategory.deleteMany({});
+  await prisma.restaurant.deleteMany({});
+  await prisma.review.deleteMany({});
+  await prisma.order.deleteMany({});
+
   // Create restaurants
   const restaurants = await Promise.all([
     prisma.restaurant.upsert({
-      where: { id: 'seed-restaurant-1' },
+      where: { id: 'Pizza Palace' },
       update: {},
       create: {
-        id: 'seed-restaurant-1',
+        id: 'Pizza Palace',
         name: 'Pizza Palace',
         description: 'Authentic Italian pizza with fresh ingredients and traditional recipes passed down for generations',
         cuisine: 'Italian',
@@ -109,10 +116,10 @@ async function main() {
     }),
 
     prisma.restaurant.upsert({
-      where: { id: 'seed-restaurant-2' },
+      where: { id: 'Sushi Master' },
       update: {},
       create: {
-        id: 'seed-restaurant-2',
+        id: 'Sushi Master',
         name: 'Sushi Master',
         description: 'Fresh sushi and Japanese cuisine prepared by expert chefs with the finest ingredients',
         cuisine: 'Japanese',
@@ -132,10 +139,10 @@ async function main() {
     }),
 
     prisma.restaurant.upsert({
-      where: { id: 'seed-restaurant-3' },
+      where: { id: 'Taco Ville' },
       update: {},
       create: {
-        id: 'seed-restaurant-3',
+        id: 'Taco Ville',
         name: 'Taco Ville',
         description: 'Authentic Mexican tacos, burritos, and more with traditional flavors and fresh ingredients',
         cuisine: 'Mexican',
@@ -155,10 +162,10 @@ async function main() {
     }),
 
     prisma.restaurant.upsert({
-      where: { id: 'seed-restaurant-4' },
+      where: { id: 'Burger Blast' },
       update: {},
       create: {
-        id: 'seed-restaurant-4',
+        id: 'Burger Blast',
         name: 'Burger Blast',
         description: 'Juicy burgers made with 100% beef, fresh vegetables, and our signature sauces',
         cuisine: 'American',
@@ -178,10 +185,10 @@ async function main() {
     }),
 
     prisma.restaurant.upsert({
-      where: { id: 'seed-restaurant-5' },
+      where: { id: 'Curry House' },
       update: {},
       create: {
-        id: 'seed-restaurant-5',
+        id: 'Curry House',
         name: 'Curry House',
         description: 'Authentic Indian curry and traditional dishes with aromatic spices and flavors',
         cuisine: 'Indian',
@@ -201,10 +208,10 @@ async function main() {
     }),
 
     prisma.restaurant.upsert({
-      where: { id: 'seed-restaurant-6' },
+      where: { id: 'Dragon Wok' },
       update: {},
       create: {
-        id: 'seed-restaurant-6',
+        id: 'Dragon Wok',
         name: 'Dragon Wok',
         description: 'Delicious Chinese cuisine with fresh ingredients and traditional cooking techniques',
         cuisine: 'Chinese',
@@ -257,7 +264,7 @@ async function main() {
   // Create menu categories and items for each restaurant
   const menuData = [
     {
-      restaurantId: 'seed-restaurant-1', // Pizza Palace
+      restaurantId: 'Pizza Palace', // Pizza Palace
       categories: [
         {
           name: 'Pizzas',
@@ -331,7 +338,7 @@ async function main() {
       ],
     },
     {
-      restaurantId: 'seed-restaurant-2', // Sushi Master
+      restaurantId: 'Sushi Master', // Sushi Master
       categories: [
         {
           name: 'Sushi Rolls',
@@ -380,7 +387,7 @@ async function main() {
       ],
     },
     {
-      restaurantId: 'seed-restaurant-3', // Taco Ville
+      restaurantId: 'Taco Ville', // Taco Ville
       categories: [
         {
           name: 'Tacos',
@@ -429,7 +436,7 @@ async function main() {
       ],
     },
     {
-      restaurantId: 'seed-restaurant-4', // Burger Blast
+      restaurantId: 'Burger Blast', // Burger Blast
       categories: [
         {
           name: 'Burgers',
@@ -478,7 +485,7 @@ async function main() {
       ],
     },
     {
-      restaurantId: 'seed-restaurant-5', // Curry House
+      restaurantId: 'Curry House', // Curry House
       categories: [
         {
           name: 'Curries',
@@ -527,7 +534,7 @@ async function main() {
       ],
     },
     {
-      restaurantId: 'seed-restaurant-6', // Dragon Wok
+      restaurantId: 'Dragon Wok', // Dragon Wok
       categories: [
         {
           name: 'Noodles',
