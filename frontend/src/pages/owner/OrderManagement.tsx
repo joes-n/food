@@ -21,7 +21,8 @@ interface Order {
     price: number;
     quantity: number;
   }>;
-  deliveryAddress: string;
+  deliveryAddress?: string;
+  delivery_address?: string;
 }
 
 export function OrderManagement() {
@@ -188,7 +189,9 @@ export function OrderManagement() {
 
                 <div>
                   <h4 className="font-bold mb-2">Delivery Address</h4>
-                  <p className="text-gray-700">{order.deliveryAddress}</p>
+                  <p className="text-gray-700">
+                    {order.deliveryAddress || order.delivery_address || 'Address not available'}
+                  </p>
                 </div>
               </div>
 
