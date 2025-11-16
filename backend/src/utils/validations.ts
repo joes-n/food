@@ -56,7 +56,7 @@ export const updateUserSchema = z.object({
 // Generic validations
 export const uuidSchema = z.object({
   params: z.object({
-    id: z.string().uuid('Invalid ID format'),
+    id: z.string().min(1, 'ID is required'),
   }),
 });
 

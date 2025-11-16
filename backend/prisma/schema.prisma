@@ -74,8 +74,8 @@ model User {
 }
 
 model Restaurant {
-  id                  String         @id @default(uuid())
-  name                String
+  id                  String         @id
+  name                String         @unique
   description         String
   logo                String?
   banner              String?
