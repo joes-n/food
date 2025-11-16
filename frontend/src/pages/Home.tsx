@@ -20,7 +20,7 @@ export function Home() {
       {/* Popular Cuisines */}
       <div className="bg-lime-400 py-16">
         <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-bold text-center mb-12">Popular Cuisines</h2>
+          <h2 className="text-4xl font-bold text-center mb-12 text-[#ffffff]">Popular Cuisines</h2>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
             {[
               { name: 'Italian', emoji: '🍝' },
