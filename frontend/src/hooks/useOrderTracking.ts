@@ -23,20 +23,21 @@ export function useOrderTracking(orderId: string | null) {
   useEffect(() => {
     trackingService.connect();
 
-    const handleConnection = () => {
-      setIsConnected(true);
-      if (orderId) {
-        trackingService.joinOrderRoom(orderId);
-      }
+    // Check connection status periodically
+    const checkConnection = () => {
+      setIsConnected(trackingService.isConnected());
     };
 
-    const handleDisconnection = () => {
-      setIsConnected(false);
-    };
+    checkConnection();
+    const interval = setInterval(checkConnection, 1000);
 
-    const handleOrderStatusUpdate = (data: OrderStatus) => {
+    if (orderId) {
+      trackingService.joinOrderRoom(orderId);
+    }
+
+    const handleOrderStatusUpdate = (data: { orderId: string; status: string; timestamp: string }) => {
       console.log('Order status update:', data);
-      setOrderStatus(data);
+      setOrderStatus(data as OrderStatus);
     };
 
     const handleLocationUpdate = (data: DriverLocation) => {
@@ -44,15 +45,11 @@ export function useOrderTracking(orderId: string | null) {
       setDriverLocation(data);
     };
 
-    trackingService.socket?.on('connect', handleConnection);
-    trackingService.socket?.on('disconnect', handleDisconnection);
-
     trackingService.onOrderStatusUpdate(handleOrderStatusUpdate);
     trackingService.onLocationUpdate(handleLocationUpdate);
 
     return () => {
-      trackingService.socket?.off('connect', handleConnection);
-      trackingService.socket?.off('disconnect', handleDisconnection);
+      clearInterval(interval);
       trackingService.offOrderStatusUpdate(handleOrderStatusUpdate);
       trackingService.offLocationUpdate(handleLocationUpdate);
 
