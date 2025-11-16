@@ -156,37 +156,6 @@ export function OwnerDashboard() {
             </div>
           </div>
 
-          {/* Quick Actions */}
-          <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-            <h2 className="text-xl font-bold mb-4">Quick Actions</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <Link
-                to={`/owner/restaurants/${selectedRestaurant.id}/edit`}
-                className="btn-primary text-center"
-              >
-                Edit Restaurant
-              </Link>
-              <Link
-                to={`/owner/restaurants/${selectedRestaurant.id}/menu`}
-                className="btn-primary text-center"
-              >
-                Manage Menu
-              </Link>
-              <Link
-                to={`/owner/restaurants/${selectedRestaurant.id}/orders`}
-                className="btn-primary text-center"
-              >
-                View Orders
-              </Link>
-              <Link
-                to={`/owner/restaurants/${selectedRestaurant.id}/earnings`}
-                className="btn-primary text-center"
-              >
-                View Earnings
-              </Link>
-            </div>
-          </div>
-
           {/* Popular Items */}
           {stats.popularItems && stats.popularItems.length > 0 && (
             <div className="bg-white rounded-lg shadow-md p-6">
