@@ -74,9 +74,15 @@ export const getRestaurantOrders = async (req: Request, res: Response) => {
       orderBy: { createdAt: 'desc' },
     });
 
+    // Transform orders to include deliveryAddress
+    const ordersWithAddress = orders.map((order) => ({
+      ...order,
+      deliveryAddress: `${order.deliveryStreet}, ${order.deliveryCity}, ${order.deliveryState} ${order.deliveryZipCode}`,
+    }));
+
     res.json({
       success: true,
-      data: orders,
+      data: ordersWithAddress,
     });
   } catch (error) {
     console.error('Get restaurant orders error:', error);
