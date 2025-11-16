@@ -3,7 +3,7 @@ import { prisma } from '../server';
 
 export const getRestaurantStats = async (req: Request, res: Response) => {
   try {
-    const { restaurantId } = req.query;
+    const { restaurantId } = req.params;
     const userId = req.user?.id;
     const userRole = req.user?.role;
 
