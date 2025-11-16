@@ -4,7 +4,7 @@ export function Home() {
   return (
     <div>
       {/* Hero Section */}
-      <div className="bg-[url('https://www.freshpoint.com/wp-content/uploads/commodity-iceberg.jpg')] bg-cover bg-center text-white py-20">
+      <div className="bg-[url('https://i.imgur.com/07g3z1E.png')] bg-cover bg-center text-white py-20">
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-6xl font-bold mb-4">🗣️Let us eat!!</h1>
           <p className="text-xl mb-8">
