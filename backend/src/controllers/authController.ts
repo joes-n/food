@@ -296,6 +296,6 @@ function generateToken(userId: string, email: string, role: string): string {
   }
 
   return jwt.sign({ userId, email, role }, jwtSecret, {
-    expiresIn: jwtExpiresIn,
-  });
+    expiresIn: jwtExpiresIn as string | number,
+  } as jwt.SignOptions);
 }

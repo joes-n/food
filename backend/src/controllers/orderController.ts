@@ -132,11 +132,11 @@ export const createOrder = async (req: Request, res: Response) => {
         deliveryFee,
         tax,
         total,
-        status: OrderStatus.PENDING,
+        status: 'pending',
         paymentMethod: paymentMethod as PaymentMethod,
-        paymentStatus: PaymentMethod.CASH_ON_DELIVERY === paymentMethod
-          ? PaymentStatus.PENDING
-          : PaymentStatus.PENDING,
+        paymentStatus: 'cash_on_delivery' === paymentMethod
+          ? 'pending'
+          : 'pending',
         deliveryStreet: deliveryAddress.street,
         deliveryCity: deliveryAddress.city,
         deliveryState: deliveryAddress.state,
@@ -213,6 +213,7 @@ export const getOrder = async (req: Request, res: Response) => {
             name: true,
             logo: true,
             phone: true,
+            ownerId: true,
           },
         },
         driver: {
@@ -438,7 +439,7 @@ export const assignDriver = async (req: Request, res: Response) => {
       where: { id: orderId },
       data: {
         driverId,
-        status: OrderStatus.CONFIRMED,
+        status: 'confirmed',
       },
       include: {
         restaurant: true,
@@ -507,7 +508,7 @@ export const cancelOrder = async (req: Request, res: Response) => {
 
     const cancelled = await prisma.order.update({
       where: { id },
-      data: { status: OrderStatus.CANCELLED },
+      data: { status: 'cancelled' },
     });
 
     res.json({

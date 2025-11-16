@@ -1,6 +1,13 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
+export interface MenuItem {
+  id: string;
+  name: string;
+  price: number;
+  image?: string;
+}
+
 export interface SelectedCustomization {
   customizationId: string;
   optionId: string;
