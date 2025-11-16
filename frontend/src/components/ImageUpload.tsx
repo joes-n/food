@@ -12,6 +12,8 @@ interface ImageUploadProps {
 export function ImageUpload({ onUploadComplete, currentImage, label = 'Upload Image', restaurantId }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(currentImage || null);
+  const [localPreviewUrl, setLocalPreviewUrl] = useState<string | null>(null);
+  const [uploadedUrl, setUploadedUrl] = useState<string | null>(null);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -29,10 +31,10 @@ export function ImageUpload({ onUploadComplete, currentImage, label = 'Upload Im
       return;
     }
 
-    // Show preview
+    // Show preview immediately using local state
     const reader = new FileReader();
     reader.onloadend = () => {
-      setPreviewUrl(reader.result as string);
+      setLocalPreviewUrl(reader.result as string);
     };
     reader.readAsDataURL(file);
 
@@ -41,25 +43,31 @@ export function ImageUpload({ onUploadComplete, currentImage, label = 'Upload Im
       setUploading(true);
       const { url } = await uploadService.uploadImage(file, restaurantId);
       onUploadComplete(url);
+      setUploadedUrl(url);
+      setPreviewUrl(url);
+      setLocalPreviewUrl(null);
       toast.success('Image uploaded successfully');
     } catch (error: any) {
       toast.error(error.message || 'Upload failed');
       setPreviewUrl(currentImage || null);
+      setLocalPreviewUrl(null);
+      setUploadedUrl(null);
     } finally {
       setUploading(false);
     }
   };
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-4">
       {label && <label className="label">{label}</label>}
 
-      {previewUrl && (
-        <div className="mb-4">
+      {(localPreviewUrl || previewUrl || currentImage || uploadedUrl) && (
+        <div className="space-y-2">
+          <p className="text-sm font-medium text-gray-700">Preview:</p>
           <img
-            src={previewUrl}
+            src={localPreviewUrl || uploadedUrl || previewUrl || currentImage}
             alt="Preview"
-            className="max-w-md h-48 object-cover rounded-lg"
+            className="w-full max-w-lg h-64 object-cover rounded-lg border-2 border-gray-200"
           />
         </div>
       )}
