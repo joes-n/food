@@ -15,7 +15,7 @@ export const ownerService = {
 
   // Get menu items for restaurant
   async getMenuItems(restaurantId: string, categoryId?: string) {
-    const params = { restaurantId };
+    const params: Record<string, string> = { restaurantId };
     if (categoryId) params.categoryId = categoryId;
     const response = await api.get('/menu-items', { params });
     return response.data;
@@ -41,7 +41,7 @@ export const ownerService = {
 
   // Get restaurant orders
   async getRestaurantOrders(restaurantId: string, status?: string) {
-    const params = { restaurantId };
+    const params: Record<string, string> = { restaurantId };
     if (status) params.status = status;
     const response = await api.get(`/orders/manage/restaurant/${restaurantId}`, { params });
     return response.data;
