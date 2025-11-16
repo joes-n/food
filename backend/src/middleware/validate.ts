@@ -21,7 +21,7 @@ export const validate =
           req.query = shape.query.parse(req.query);
         }
         if (shape.params) {
-          req.params = schema.params.parse(req.params);
+          req.params = shape.params.parse(req.params);
         }
       } else {
         // Legacy format: separate schemas

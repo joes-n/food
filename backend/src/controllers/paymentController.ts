@@ -4,7 +4,7 @@ import { prisma } from '../server';
 import { PaymentStatus } from '@prisma/client';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2024-11-20.acacia',
+  apiVersion: '2025-10-29.clover',
 });
 
 export const createPaymentIntent = async (req: Request, res: Response) => {
@@ -81,9 +81,21 @@ export const confirmPayment = async (req: Request, res: Response) => {
     // Retrieve payment intent from Stripe
     const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
 
+    // Find payment by paymentIntentId first
+    const existingPayment = await prisma.payment.findFirst({
+      where: { paymentIntentId },
+    });
+
+    if (!existingPayment) {
+      return res.status(404).json({
+        success: false,
+        error: 'Payment not found',
+      });
+    }
+
     // Update payment status in database
     const payment = await prisma.payment.update({
-      where: { paymentIntentId },
+      where: { id: existingPayment.id },
       data: {
         paymentStatus: paymentIntent.status === 'succeeded' ? 'completed' : 'failed',
         transactionId: paymentIntent.id,
