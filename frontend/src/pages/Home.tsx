@@ -4,13 +4,13 @@ export function Home() {
   return (
     <div>
       {/* Hero Section */}
-      <div className="bg-[url('https://i.imgur.com/07g3z1E.png')] bg-cover bg-center text-white py-20">
+      <div className="bg-[#10b981] bg-cover bg-center text-white py-20">
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-6xl font-bold mb-4">🗣️Let us eat!!</h1>
           <p className="text-xl mb-8">
             Discover great meals from local restaurants and track your delivery in real-time
           </p>
-          <Link to="/restaurants" className="bg-white text-primary-500 px-8 py-3 rounded-lg font-bold text-lg hover:bg-gray-100 transition-colors">
+          <Link to="/restaurants" className="bg-white text-[#ffffff] px-8 py-3 rounded-lg font-bold text-lg hover:bg-gray-100 transition-colors">
             Browse Restaurants
           </Link>
         </div>
