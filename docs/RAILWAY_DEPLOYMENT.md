@@ -192,11 +192,10 @@ STRIPE_WEBHOOK_SECRET=whsec_...
 3. Set the following:
    - **Root Directory**: `frontend`
    - **Build Command**: `npm install && npm run build`
-   - **Start Command**: `npx vite preview --host 0.0.0.0 --port $PORT`
+   - **Start Command**: `npm start`
    - **Watch Paths**: `frontend/**`
 
-Alternatively, you can use a static file server:
-   - **Start Command**: `npm install -g serve && serve -s dist -l $PORT`
+**Note**: The `start` command runs `serve` to serve the static built files from the `dist` directory.
 
 ### 4.3 Set Environment Variables
 
