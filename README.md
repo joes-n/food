@@ -1,5 +1,6 @@
 # LettucEat
-![alt text](https://www.freshpoint.com/wp-content/uploads/commodity-iceberg.jpg)
+![alt text](https://www.freshpoint.com/wp-content/uploads/commodity-iceberg.jpg)  
+
 A food ordering and tracking platform.
 
 ## Tech Stack
