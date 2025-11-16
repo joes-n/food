@@ -3,14 +3,15 @@ import { Link } from 'react-router-dom';
 export function Home() {
   return (
     <div>
-      {/* Hero Section */}
-      <div className="bg-[#10b981] bg-cover bg-center text-white py-20">
-        <div className="container mx-auto px-4 text-center">
+      {/* Banner Section */}
+      <div className="relative bg-[#10b981] bg-[url('https://i.imgur.com/07g3z1E.png')] bg-center text-white py-20">
+        <div className="absolute inset-0 bg-black/50"></div>
+        <div className="container mx-auto px-4 text-center relative z-10">
           <h1 className="text-6xl font-bold mb-4">🗣️Let us eat!!</h1>
           <p className="text-xl mb-8">
             Discover great meals from local restaurants and track your delivery in real-time
           </p>
-          <Link to="/restaurants" className="bg-white text-[#ffffff] px-8 py-3 rounded-lg font-bold text-lg hover:bg-gray-100 transition-colors">
+          <Link to="/restaurants" className="bg-white text-[#10b981] px-8 py-3 rounded-lg font-bold text-lg hover:bg-gray-100 transition-colors">
             Browse Restaurants
           </Link>
         </div>
