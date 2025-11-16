@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc -p tsconfig.prod.json && vite build",
     "build:strict": "tsc && vite build",
-    "start": "node -e \"require('child_process').execSync('serve -s dist -p ' + (process.env.PORT || 8080) + ' -n', {stdio: 'inherit'})\"",
+    "start": "sh ./start.sh",
     "preview": "serve -s dist",
     "lint": "eslint src --ext ts,tsx",
     "format": "prettier --write src"
