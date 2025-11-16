@@ -195,7 +195,7 @@ STRIPE_WEBHOOK_SECRET=whsec_...
    - **Start Command**: `npm start`
    - **Watch Paths**: `frontend/**`
 
-**Note**: The `start` command runs `serve` to serve the static built files from the `dist` directory.
+**Note**: The `start` command runs `serve` to serve the static built files from the `dist` directory on `0.0.0.0` (all network interfaces) so Railway can connect to it.
 
 ### 4.3 Set Environment Variables
 
@@ -455,18 +455,38 @@ cors({
 
 ### Issue: 502 Bad Gateway
 
+**For Backend:**
+
 **Check:**
 - Backend is listening on the correct PORT
+- Server binds to `0.0.0.0` not `localhost`
 - Health check endpoint exists
 
 **Solution:**
 ```typescript
-// Ensure server listens on Railway's PORT
+// Ensure server listens on Railway's PORT and all interfaces
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
 });
 ```
+
+**For Frontend:**
+
+**Check:**
+- Start command binds to `0.0.0.0` not `localhost`
+- Port is correctly set from environment variable
+- Built files exist in `dist` directory
+
+**Solution:**
+Ensure your `package.json` start script uses:
+```json
+"start": "serve -s dist -l tcp://0.0.0.0:${PORT:-8080}"
+```
+
+Common mistakes:
+- Using `-l $PORT` instead of `-l tcp://0.0.0.0:$PORT` (binds to localhost only)
+- Using `vite preview` without `--host 0.0.0.0` flag
 
 ### Issue: File Uploads Not Working
 
