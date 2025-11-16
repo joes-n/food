@@ -17,7 +17,7 @@ export interface User {
   id: string;
   email: string;
   name: string;
-  role: string;
+  role: 'customer' | 'restaurant_owner' | 'driver' | 'admin';
   phone?: string;
   avatar?: string;
   createdAt: string;
