@@ -60,6 +60,12 @@ export const uuidSchema = z.object({
   }),
 });
 
+export const restaurantIdSchema = z.object({
+  params: z.object({
+    id: z.string().min(1, 'Restaurant ID is required'),
+  }),
+});
+
 export const paginationSchema = z.object({
   query: z.object({
     page: z.string().optional().transform((val) => (val ? parseInt(val, 10) : 1)).pipe(z.number().min(1)),
@@ -85,7 +91,7 @@ export const createRestaurantSchema = z.object({
 
 export const updateRestaurantSchema = z.object({
   params: z.object({
-    id: z.string().uuid('Invalid restaurant ID'),
+    id: z.string().min(1, 'Restaurant ID is required'),
   }),
   body: z.object({
     name: z.string().min(2).optional(),
@@ -94,6 +100,7 @@ export const updateRestaurantSchema = z.object({
     address: z.string().min(5).optional(),
     phone: z.string().optional(),
     email: z.string().email('Invalid email').optional(),
+    banner: z.string().url().optional(),
     priceRange: z.enum(['budget', 'medium', 'premium']).optional(),
     deliveryFee: z.number().min(0).optional(),
     minOrderAmount: z.number().min(0).optional(),
@@ -105,7 +112,7 @@ export const updateRestaurantSchema = z.object({
 // Order validations
 export const createOrderSchema = z.object({
   body: z.object({
-    restaurantId: z.string().uuid('Invalid restaurant ID'),
+    restaurantId: z.string().min(1, 'Restaurant ID is required'),
     items: z.array(
       z.object({
         menuItemId: z.string().uuid('Invalid menu item ID'),
