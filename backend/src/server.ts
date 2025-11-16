@@ -44,11 +44,13 @@ const io = new Server(httpServer, {
 
 // Middleware
 app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
 // Serve uploaded files
 app.use('/uploads', express.static('uploads'));
+
+// Body parsers for all routes (except upload will use multer)
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Create logs directory if it doesn't exist
 import fs from 'fs';
