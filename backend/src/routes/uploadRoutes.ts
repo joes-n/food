@@ -11,14 +11,21 @@ const prisma = new PrismaClient();
 const router = Router();
 
 // Upload single file
-router.post('/image', authenticate, async (req: Request, res: Response) => {
-  // Extract restaurant ID from request body or query params
+router.post('/image', authenticate, upload.single('image'), async (req: Request, res: Response) => {
+  // Extract restaurant ID from request body (now available after multer processes the form)
   const { restaurantId } = req.body;
 
   if (!restaurantId) {
     return res.status(400).json({
       success: false,
       error: 'Restaurant ID is required',
+    });
+  }
+
+  if (!req.file) {
+    return res.status(400).json({
+      success: false,
+      error: 'No file uploaded',
     });
   }
 
@@ -45,45 +52,16 @@ router.post('/image', authenticate, async (req: Request, res: Response) => {
       });
     }
 
-    // Handle file upload
-    upload.single('image')(req, res, async (err) => {
-      if (err instanceof multer.MulterError) {
-        // Multer-specific errors
-        if (err.code === 'LIMIT_FILE_SIZE') {
-          return res.status(400).json({
-            success: false,
-            error: 'File size too large',
-          });
-        }
-        return res.status(400).json({
-          success: false,
-          error: err.message,
-        });
-      } else if (err) {
-        // Other errors
-        return res.status(400).json({
-          success: false,
-          error: err.message,
-        });
-      }
-
-      if (!req.file) {
-        return res.status(400).json({
-          success: false,
-          error: 'No file uploaded',
-        });
-      }
-
-      // Return the file path
-      const fileUrl = `/uploads/${req.file.filename}`;
-      res.json({
-        success: true,
-        data: {
-          filename: req.file.filename,
-          url: fileUrl,
-          path: req.file.path,
-        },
-      });
+    // Return the full file URL including backend host
+    const baseUrl = process.env.SERVER_URL || `http://localhost:${process.env.PORT || 5000}`;
+    const fileUrl = `${baseUrl}/uploads/${req.file.filename}`;
+    res.json({
+      success: true,
+      data: {
+        filename: req.file.filename,
+        url: fileUrl,
+        path: req.file.path,
+      },
     });
   } catch (error) {
     console.error('Upload error:', error);
