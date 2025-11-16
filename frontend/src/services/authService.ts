@@ -44,6 +44,12 @@ export interface LoginResponse {
 export const authService = {
   async login(credentials: LoginRequest): Promise<LoginResponse> {
     const response = await api.post('/auth/login', credentials);
+    // If API returns success: false, throw an error with the message
+    if (response.data && response.data.success === false) {
+      const error = new Error(response.data.error || 'Login failed') as any;
+      error.response = response;
+      throw error;
+    }
     return response.data;
   },
 
