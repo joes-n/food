@@ -31,6 +31,7 @@ export function RestaurantEdit() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState<Partial<Restaurant>>({});
+  const [bannerError, setBannerError] = useState('');
 
   useEffect(() => {
     // Check authentication
@@ -93,13 +94,40 @@ export function RestaurantEdit() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
+    setBannerError('');
+
+    // Validate that banner image is present
+    if (!formData.banner) {
+      setBannerError('Banner image is required');
+      setSaving(false);
+      return;
+    }
 
     try {
       await ownerService.updateRestaurant(restaurantId!, formData);
       toast.success('Restaurant updated successfully');
       navigate('/owner/dashboard');
     } catch (error: any) {
-      toast.error(error.response?.data?.error || 'Failed to update restaurant');
+      const errorMessage = error.response?.data?.error || 'Failed to update restaurant';
+      const errorDetails = error.response?.data?.details;
+
+      // Check if this is a validation error about banner
+      if (
+        errorMessage.toLowerCase().includes('validation') &&
+        errorDetails &&
+        Array.isArray(errorDetails)
+      ) {
+        const bannerErrorDetail = errorDetails.find(
+          (d: any) => d.path && d.path.includes('banner')
+        );
+        if (bannerErrorDetail) {
+          setBannerError('Banner image is required');
+        } else {
+          toast.error(errorMessage);
+        }
+      } else {
+        toast.error(errorMessage);
+      }
     } finally {
       setSaving(false);
     }
@@ -109,6 +137,7 @@ export function RestaurantEdit() {
     try {
       await ownerService.updateRestaurant(restaurantId!, { banner: url });
       setFormData({ ...formData, banner: url });
+      setBannerError(''); // Clear error when banner is uploaded
       toast.success('Banner updated successfully');
     } catch (error) {
       toast.error('Failed to update banner');
@@ -161,6 +190,11 @@ export function RestaurantEdit() {
             restaurantId={restaurantId!}
             onUploadComplete={handleBannerUpload}
           />
+          {bannerError && (
+            <div className="text-red-600 text-sm font-medium mt-2">
+              {bannerError}
+            </div>
+          )}
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
