@@ -16,17 +16,12 @@ export function Navbar() {
   };
 
   return (
-    <nav className="bg-lime-400 shadow-md">
+    <nav className="bg-lime-400 shadow-md sticky top-0 z-50">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center py-4">
           <Link to="/" className="text-2xl font-bold text-[#ffffff]">LettucEat
           </Link>
           <div className="flex items-center space-x-6">
-            {user?.role !== 'restaurant_owner' && (
-              <Link to="/restaurants" className="text-[#ffffff] hover:text-[#10b981]">
-                Restaurants
-              </Link>
-            )}
             {isAuthenticated && user?.role !== 'restaurant_owner' && (
               <Link to="/cart" className="text-[#ffffff] hover:text-[#10b981] flex items-center gap-1">
                 <ShoppingCart size={20} />
