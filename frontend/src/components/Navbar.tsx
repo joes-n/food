@@ -70,10 +70,16 @@ export function Navbar() {
                 Orders
               </Link>
               <Link
+                to="/owner/menu"
+                className="text-[#ffffff] hover:text-[#10b981] font-medium"
+              >
+                Menu
+              </Link>
+              <Link
                 to="/owner/edit"
                 className="text-[#ffffff] hover:text-[#10b981] font-medium"
               >
-                Edit
+                Info
               </Link>
               <Link
                 to="/owner/earnings"
