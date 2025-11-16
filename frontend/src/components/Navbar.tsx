@@ -23,12 +23,12 @@ export function Navbar() {
           </Link>
           <div className="flex items-center space-x-6">
             {user?.role !== 'restaurant_owner' && (
-              <Link to="/restaurants" className="text-gray-700 hover:text-primary-600">
+              <Link to="/restaurants" className="text-[#ffffff] hover:text-[#10b981]">
                 Restaurants
               </Link>
             )}
             {isAuthenticated && user?.role !== 'restaurant_owner' && (
-              <Link to="/cart" className="text-gray-700 hover:text-primary-600 flex items-center gap-1">
+              <Link to="/cart" className="text-[#ffffff] hover:text-[#10b981] flex items-center gap-1">
                 <ShoppingCart size={20} />
                 <span>Cart</span>
               </Link>
@@ -38,7 +38,7 @@ export function Navbar() {
                 <span className="text-gray-600">Hello, {user?.name}</span>
                 <button
                   onClick={handleLogout}
-                  className="text-gray-700 hover:text-primary-600 flex items-center gap-1"
+                  className="text-[#ffffff] hover:text-[#10b981] flex items-center gap-1"
                 >
                   <LogOut size={20} />
                   <span>Logout</span>
@@ -47,10 +47,10 @@ export function Navbar() {
             )}
             {!isAuthenticated && (
               <>
-                <Link to="/login" className="text-gray-700 hover:text-primary-600">
+                <Link to="/login" className="text-[#ffffff] hover:text-[#10b981]">
                   Login
                 </Link>
-                <Link to="/register" className="text-gray-700 hover:text-primary-600">
+                <Link to="/register" className="text-[#ffffff] hover:text-[#10b981]">
                   Register
                 </Link>
               </>
@@ -64,25 +64,25 @@ export function Navbar() {
             <div className="flex space-x-8 py-3">
               <Link
                 to="/owner/dashboard"
-                className="text-gray-700 hover:text-primary-600 font-medium"
+                className="text-[#ffffff] hover:text-[#10b981] font-medium"
               >
                 Dashboard
               </Link>
               <Link
                 to="/owner/orders"
-                className="text-gray-700 hover:text-primary-600 font-medium"
+                className="text-[#ffffff] hover:text-[#10b981] font-medium"
               >
                 Orders
               </Link>
               <Link
                 to="/owner/edit"
-                className="text-gray-700 hover:text-primary-600 font-medium"
+                className="text-[#ffffff] hover:text-[#10b981] font-medium"
               >
                 Edit
               </Link>
               <Link
                 to="/owner/earnings"
-                className="text-gray-700 hover:text-primary-600 font-medium"
+                className="text-[#ffffff] hover:text-[#10b981] font-medium"
               >
                 Earnings
               </Link>
