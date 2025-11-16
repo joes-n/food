@@ -252,9 +252,15 @@ export const getOrder = async (req: Request, res: Response) => {
       });
     }
 
+    // Transform order to include deliveryAddress
+    const orderWithAddress = {
+      ...order,
+      deliveryAddress: `${order.deliveryStreet}, ${order.deliveryCity}, ${order.deliveryState} ${order.deliveryZipCode}`,
+    };
+
     res.json({
       success: true,
-      data: order,
+      data: orderWithAddress,
     });
   } catch (error) {
     console.error('Get order error:', error);
@@ -322,9 +328,15 @@ export const getMyOrders = async (req: Request, res: Response) => {
       prisma.order.count({ where }),
     ]);
 
+    // Transform orders to include deliveryAddress
+    const ordersWithAddress = orders.map((order) => ({
+      ...order,
+      deliveryAddress: `${order.deliveryStreet}, ${order.deliveryCity}, ${order.deliveryState} ${order.deliveryZipCode}`,
+    }));
+
     res.json({
       success: true,
-      data: orders,
+      data: ordersWithAddress,
       pagination: {
         page: Number(page),
         pageSize: Number(pageSize),
