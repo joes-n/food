@@ -1,6 +1,6 @@
-# Food Ordering & Tracking App
-
-A full-stack food ordering platform built with modern technologies.
+# LettucEat
+![alt text](https://www.freshpoint.com/wp-content/uploads/commodity-iceberg.jpg)
+A food ordering and tracking platform.
 
 ## Tech Stack
 
