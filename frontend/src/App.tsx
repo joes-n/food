@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { CartProvider } from './contexts/CartContext';
-import { Home } from './pages/Home';
 import { RestaurantList } from './pages/RestaurantList';
 import { RestaurantDetail } from './pages/RestaurantDetail';
 import { Cart } from './pages/Cart';
@@ -18,12 +17,12 @@ import './App.css';
 
 function AppContent() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="flex flex-col min-h-screen bg-gray-50">
       <Navbar />
 
-      <main>
+      <main className="flex-grow">
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<RestaurantList />} />
           <Route path="/restaurants" element={<RestaurantList />} />
           <Route path="/restaurants/:id" element={<RestaurantDetail />} />
           <Route path="/cart" element={<Cart />} />
@@ -41,7 +40,7 @@ function AppContent() {
         </Routes>
       </main>
 
-      <footer className="bg-gray-800 text-white py-6 mt-12">
+      <footer className="bg-gray-800 text-white py-6 mt-auto">
         <div className="container mx-auto px-4 text-center">
           <p>&copy; 2025 LettucEat. No rights reserved :/</p>
         </div>
