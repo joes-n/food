@@ -117,7 +117,7 @@ export interface Order {
   id: string;
   customerId: string;
   restaurantId: string;
-  driverId?: string;
+  promoCodeId?: string;
   items: OrderItem[];
   subtotal: number;
   deliveryFee: number;

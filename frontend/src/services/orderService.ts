@@ -32,7 +32,7 @@ export interface Order {
   orderNumber: number;
   customerId: string;
   restaurantId: string;
-  driverId?: string;
+  promoCodeId?: string;
   subtotal: number;
   deliveryFee: number;
   discount: number;
@@ -55,11 +55,6 @@ export interface Order {
     logo?: string;
     phone?: string;
     estimatedDeliveryTime: number;
-  };
-  driver?: {
-    id: string;
-    name: string;
-    phone?: string;
   };
 }
 

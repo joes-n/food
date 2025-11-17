@@ -81,10 +81,6 @@ describe('Order Controller', () => {
       ],
       deliveryAddress: {
         street: '123 Main St',
-        city: 'Anytown',
-        state: 'CA',
-        zipCode: '12345',
-        country: 'USA',
         latitude: 37.7749,
         longitude: -122.4194,
         instructions: 'Leave at door',
@@ -135,9 +131,6 @@ describe('Order Controller', () => {
         paymentMethod: 'credit_card',
         paymentStatus: 'pending',
         deliveryStreet: '123 Main St',
-        deliveryCity: 'Anytown',
-        deliveryState: 'CA',
-        deliveryZipCode: '12345',
         deliveryCountry: 'USA',
         deliveryLatitude: 37.7749,
         deliveryLongitude: -122.4194,
@@ -438,12 +431,8 @@ describe('Order Controller', () => {
         id: 'order-1',
         customerId: 'user-1',
         restaurantId: 'rest-1',
-        driverId: null,
         status: 'pending',
         deliveryStreet: '123 Main St',
-        deliveryCity: 'Anytown',
-        deliveryState: 'CA',
-        deliveryZipCode: '12345',
         items: [
           {
             id: 'order-item-1',
@@ -528,12 +517,8 @@ describe('Order Controller', () => {
         id: 'order-1',
         customerId: 'user-1',
         restaurantId: 'rest-1',
-        driverId: 'driver-1',
         status: 'preparing',
         deliveryStreet: '123 Main St',
-        deliveryCity: 'Anytown',
-        deliveryState: 'CA',
-        deliveryZipCode: '12345',
         items: [],
         restaurant: {
           id: 'rest-1',
@@ -570,12 +555,8 @@ describe('Order Controller', () => {
         id: 'order-1',
         customerId: 'user-1',
         restaurantId: 'rest-1',
-        driverId: 'user-1',
         status: 'out_for_delivery',
         deliveryStreet: '123 Main St',
-        deliveryCity: 'Anytown',
-        deliveryState: 'CA',
-        deliveryZipCode: '12345',
         items: [],
         restaurant: {
           id: 'rest-1',
@@ -612,12 +593,8 @@ describe('Order Controller', () => {
         id: 'order-1',
         customerId: 'user-1',
         restaurantId: 'rest-1',
-        driverId: null,
         status: 'pending',
         deliveryStreet: '123 Main St',
-        deliveryCity: 'Anytown',
-        deliveryState: 'CA',
-        deliveryZipCode: '12345',
         items: [],
         restaurant: {
           id: 'rest-1',
@@ -677,12 +654,8 @@ describe('Order Controller', () => {
         id: 'order-1',
         customerId: 'user-2',
         restaurantId: 'rest-1',
-        driverId: 'driver-1',
         status: 'pending',
         deliveryStreet: '123 Main St',
-        deliveryCity: 'Anytown',
-        deliveryState: 'CA',
-        deliveryZipCode: '12345',
         items: [],
         restaurant: {
           id: 'rest-1',
@@ -853,8 +826,7 @@ describe('Order Controller', () => {
       const mockOrders = [
         {
           id: 'order-1',
-          driverId: 'user-1',
-          status: 'out_for_delivery',
+            status: 'out_for_delivery',
           deliveryStreet: '123 Main St',
           deliveryCity: 'Anytown',
           deliveryState: 'CA',
@@ -878,8 +850,7 @@ describe('Order Controller', () => {
 
       expect(prisma.order.findMany).toHaveBeenCalledWith({
         where: {
-          driverId: 'user-1',
-        },
+          },
         skip: 0,
         take: 10,
         orderBy: { createdAt: 'desc' },
@@ -1096,7 +1067,6 @@ describe('Order Controller', () => {
           id: 'rest-1',
           ownerId: 'owner-1',
         },
-        driverId: 'user-1',
       };
 
       const mockUpdatedOrder = {
@@ -1325,7 +1295,6 @@ describe('Order Controller', () => {
     it('should assign driver successfully', async () => {
       const mockOrder = {
         id: 'order-1',
-        driverId: null,
         status: 'pending',
         restaurant: {
           id: 'rest-1',
@@ -1348,8 +1317,7 @@ describe('Order Controller', () => {
       expect(prisma.order.update).toHaveBeenCalledWith({
         where: { id: 'order-1' },
         data: {
-          driverId: 'driver-1',
-          status: 'confirmed',
+            status: 'confirmed',
         },
         include: {
           restaurant: true,
