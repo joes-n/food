@@ -36,7 +36,6 @@ export interface User {
   name: string;
   role: UserRole;
   phone?: string;
-  avatar?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -123,7 +122,6 @@ export interface Order {
   subtotal: number;
   deliveryFee: number;
   discount: number;
-  tax: number;
   total: number;
   status: OrderStatus;
   paymentMethod: PaymentMethod;
@@ -158,10 +156,6 @@ export interface SelectedCustomization {
 
 export interface DeliveryAddress {
   street: string;
-  city: string;
-  state: string;
-  zipCode: string;
-  country: string;
   latitude?: number;
   longitude?: number;
   instructions?: string;
