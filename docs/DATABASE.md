@@ -9,33 +9,67 @@ The database uses PostgreSQL with Prisma ORM. The schema is designed to support 
 ## Entity Relationship Diagram
 
 ```
-User (customers, owners, drivers, admins)
+User (Role-Based Entity - All users share same table)
     │
-    ├─ owns → Restaurant
-    ├─ places → Order
-    ├─ writes → Review
-    ├─ favorites → Restaurant
-    ├─ delivers → Delivery
-    ├─ sends → ChatMessage
-    └─ receives ← ChatMessage
-            │
-Restaurant
+    ├─ [customer role]
+    │   ├─ places → Order
+    │   ├─ writes → Review
+    │   ├─ favorites → Restaurant
+    │   └─ receives ← ChatMessage
+    │
+    ├─ [restaurant_owner role]
+    │   ├─ owns → Restaurant (Restaurant.id = ownerId)
+    │   ├─ receives ← ChatMessage
+    │   └─ sends → ChatMessage
+    │
+    ├─ [driver role]
+    │   ├─ delivers → Delivery (via Order → Delivery)
+    │   ├─ receives ← ChatMessage
+    │   └─ sends → ChatMessage
+    │
+    └─ [admin role]
+        ├─ sends → ChatMessage
+        └─ receives ← ChatMessage
+                │
+                │
+Restaurant (ID equals ownerId - set in application code)
+    │
     ├─ has many → MenuCategory
     │   └─ has many → MenuItem
     │       └─ has many → MenuItemCustomization
     │           └─ has many → CustomizationOption
-    ├─ has many → Order
-    ├─ has many → Review
+    ├─ has many → Order (placed by customer)
+    ├─ has many → Review (written by customer)
     ├─ has many → OperatingHours
-    └─ has many → Favorite
+    ├─ has many → Favorite (from customers)
+    └─ has one → DeliveryRoute (via Order → Delivery)
             │
-Order
+            │
+Order (Placed by Customer, for Restaurant, assigned to Driver)
     ├─ has many → OrderItem
     │   └─ has many → SelectedCustomization
     ├─ has one → Payment
-    ├─ has one → Delivery
+    ├─ has one → Delivery (assigned to driver)
     │   └─ has one → DeliveryRoute
-    └─ has one → Review
+    └─ has one → Review (written by customer)
+            │
+            │
+Delivery (Assigned to Driver, for Order)
+    ├─ has one → DeliveryRoute
+    │   └─ pickup: Restaurant location
+    │   └─ destination: Customer delivery address
+    └─ tracks: distance & estimatedDuration
+
+ChatMessage (Multi-Role Communication)
+    │
+    ├─ sent by: Customer | Restaurant Owner | Driver | Admin
+    └─ received by: Customer | Restaurant Owner | Driver | Admin
+
+Favorite (Customer's preferred restaurants)
+    └─ unique per (customer, restaurant) pair
+
+PromoCode (System-wide discount codes)
+    └─ applied to: Orders (via promoCodeId foreign key)
 ```
 
 ## Tables
@@ -59,15 +93,18 @@ Order
 - One-to-Many with Order (customer)
 - One-to-Many with Review
 - One-to-Many with Favorite
-- One-to-Many with Delivery (driver)
+- One-to-Many with Delivery (driver) - Access via Order → Delivery
 - One-to-Many with ChatMessage (sent and received)
 
 ### 2. Restaurant
 
 **Purpose**: Stores restaurant information
 
+**Important Convention**:
+The `id` field MUST be explicitly set to the same value as `ownerId` when creating a restaurant. This is a business rule enforced at the application level, not by the database schema.
+
 **Key Fields**:
-- `id`: Restaurant identifier (uses owner ID as primary key)
+- `id`: Restaurant identifier (must equal ownerId - set manually in application code)
 - `name`: Unique restaurant name
 - `description`: Restaurant description
 - `logo`: Optional logo image URL
@@ -88,6 +125,20 @@ Order
 - `estimatedDeliveryTime`: Estimated delivery time in minutes
 - `createdAt`: Record creation timestamp
 - `updatedAt`: Last update timestamp
+
+**Example** (JavaScript/TypeScript):
+```javascript
+// When creating a restaurant:
+const restaurant = await prisma.restaurant.create({
+  data: {
+    id: ownerId,  // Must explicitly set id = ownerId
+    name: 'My Restaurant',
+    description: 'Great food!',
+    // ... other fields
+    ownerId: ownerId,  // Also set as ownerId field
+  },
+});
+```
 
 **Indexes**:
 - Owner ID
@@ -176,12 +227,12 @@ Order
 - `id`: UUID primary key
 - `customerId`: References the customer (User.id)
 - `restaurantId`: References the restaurant
-- `driverId`: Optional assigned driver (User.id)
+- `promoCodeId`: Optional reference to promo code (PromoCode.id)
 - `orderNumber`: Sequential order number for reference
-- `subtotal`: Items total before tax and delivery
+- `subtotal`: Items total before delivery
 - `deliveryFee`: Delivery cost
 - `discount`: Discount amount
-- `total`: Final total including tax, delivery, discounts
+- `total`: Final total including delivery, discounts
 - `status`: Order status (OrderStatus enum)
   - pending → confirmed → preparing → ready_for_pickup → out_for_delivery → delivered
 - `paymentMethod`: Payment method (PaymentMethod enum)
@@ -204,10 +255,12 @@ pending → confirmed → preparing → out_for_delivery → delivered
             ready_for_pickup ←────┘
 ```
 
+**Note**: Driver assignment is handled through the Delivery table. Access the assigned driver via `Order → Delivery → driverId`.
+
 **Relationships**:
 - Many-to-One with User (customer)
 - Many-to-One with Restaurant
-- Many-to-One with User (driver, optional)
+- Many-to-One with PromoCode (optional)
 - One-to-Many with OrderItem
 - One-to-One with Payment
 - One-to-One with Delivery
@@ -407,6 +460,9 @@ pending → confirmed → preparing → out_for_delivery → delivered
 - `createdAt`: Record creation timestamp
 - `updatedAt`: Last update timestamp
 
+**Relationships**:
+- One-to-Many with Order
+
 **Indexes**:
 - Active status
 - Promo code
@@ -441,7 +497,7 @@ The schema includes strategic indexes for performance:
 
 - **User**: Email, Role
 - **Restaurant**: Owner ID, Active status, Cuisine
-- **Order**: Customer ID, Restaurant ID, Driver ID, Status, Created date, Payment status
+- **Order**: Customer ID, Restaurant ID, PromoCode ID, Status, Created date, Payment status
 - **Menu**: Restaurant ID, Category ID, Availability
 - **Payment**: Payment status, Transaction ID
 - **Chat**: Sender ID, Receiver ID, Created date
@@ -553,6 +609,90 @@ Sample data includes:
 4. Update relationships in related tables
 5. Document the table in this file
 
+### Restaurant ID Convention ⚠️
+**Important**: The Restaurant model's `id` field must be set to the same value as `ownerId` when creating a restaurant. This is a business rule enforced at the application level, not by the database schema.
+
+**Example**:
+```javascript
+const restaurant = await prisma.restaurant.create({
+  data: {
+    id: ownerId,  // CRITICAL: Must set id = ownerId
+    name: 'My Restaurant',
+    ownerId: ownerId,  // Must also set this field
+  },
+});
+```
+
+Failure to follow this convention will break the application logic and foreign key relationships.
+
+### PromoCode Usage in Orders
+When creating an order with a promo code:
+1. Include `promoCodeId` in the Order record to track which code was used
+2. The `discount` field should reflect the promo code value
+3. On successful payment, increment the promo code's `usedCount` to enforce usage limits
+4. Always validate that `usedCount < maxUses` before allowing promo code application
+
+**Example**:
+```javascript
+// When applying a promo code to an order:
+const order = await prisma.order.create({
+  data: {
+    customerId,
+    restaurantId,
+    promoCodeId: promoCode.id,  // Track which promo code was used
+    discount: calculatedDiscount,
+    // ... other fields
+  },
+});
+
+// After successful payment:
+await prisma.promoCode.update({
+  where: { id: promoCode.id },
+  data: {
+    usedCount: { increment: 1 },
+  },
+});
+```
+
+**Benefits**:
+- Track which promo codes are used
+- Enforce maximum usage limits
+- Enable analytics on promo code effectiveness
+- Identify popular vs. unused codes
+
+### Driver Assignment Pattern ⚠️
+**Important**: Drivers are assigned to orders through the Delivery table, not directly on the Order table.
+
+**Correct Pattern** (Access via Delivery):
+```javascript
+// To get driver for an order:
+const order = await prisma.order.findUnique({
+  where: { id: orderId },
+  include: {
+    delivery: {
+      include: {
+        driver: true,  // Access driver through delivery
+      },
+    },
+  },
+});
+const driver = order.delivery?.driver;
+
+// To get driver's deliveries:
+const deliveries = await prisma.delivery.findMany({
+  where: { driverId: driverId },
+  include: { order: true },
+});
+```
+
+**DO NOT** use Order.driverId (field was removed) or Order.deliveredOrders (relation was removed).
+
+**Why this pattern?**:
+- Single source of truth (driverId only in Delivery table)
+- Eliminates data redundancy
+- Ensures consistency across the system
+- Orders can exist without drivers (until assigned)
+
 ## Troubleshooting
 
 ### Common Issues
@@ -565,6 +705,15 @@ Sample data includes:
 
 **Issue**: Migration conflicts
 **Solution**: Reset migrations in development, use `--create-only` for production
+
+**Issue**: Restaurant creation breaks application logic
+**Solution**: When creating a restaurant, you MUST set `id` to the same value as `ownerId`. See "Restaurant ID Convention" in Best Practices.
+
+**Issue**: Promo code usage not tracked
+**Solution**: Always set `promoCodeId` on orders to track which promo codes were used. Increment `usedCount` after successful payment.
+
+**Issue**: Trying to access driver from Order directly
+**Solution**: Driver is NOT stored on Order. Access via `Order → Delivery → driverId` or use `User.driverDeliveries` for a driver's deliveries.
 
 **Issue**: Performance issues
 **Solution**: Add missing indexes, use `explain analyze` to optimize queries
