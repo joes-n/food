@@ -102,7 +102,6 @@ export const getRestaurantById = async (req: Request, res: Response) => {
               select: {
                 id: true,
                 name: true,
-                avatar: true,
               },
             },
           },
@@ -162,7 +161,7 @@ export const createRestaurant = async (req: Request, res: Response) => {
       minOrderAmount,
     } = req.body;
 
-    // Check if user already has a restaurant
+    // Check if user already has a restaurant (one owner = one restaurant)
     if (userRole === 'restaurant_owner') {
       const existingRestaurant = await prisma.restaurant.findFirst({
         where: { ownerId: userId },
@@ -184,7 +183,6 @@ export const createRestaurant = async (req: Request, res: Response) => {
 
     const restaurant = await prisma.restaurant.create({
       data: {
-        id: name, // Use name as ID
         name,
         description,
         cuisine,
@@ -380,27 +378,25 @@ export const getMyRestaurants = async (req: Request, res: Response) => {
       });
     }
 
-    const where = userRole === 'admin' ? {} : { ownerId: userId };
-
-    const restaurants = await prisma.restaurant.findMany({
-      where,
+    // One owner = one restaurant, but admins can see all
+    const restaurant = await prisma.restaurant.findFirst({
+      where: userRole === 'admin' ? {} : { ownerId: userId },
       include: {
         _count: {
           select: { orders: true, reviews: true, categories: true },
         },
       },
-      orderBy: { createdAt: 'desc' },
     });
 
     res.json({
       success: true,
-      data: restaurants,
+      data: restaurant, // Return single restaurant instead of array
     });
   } catch (error) {
     console.error('Get my restaurants error:', error);
     res.status(500).json({
       success: false,
-      error: 'Failed to fetch restaurants',
+      error: 'Failed to fetch restaurant',
     });
   }
 };

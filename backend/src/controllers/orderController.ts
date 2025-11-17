@@ -120,8 +120,7 @@ export const createOrder = async (req: Request, res: Response) => {
 
     // Calculate totals
     const deliveryFee = restaurant.deliveryFee;
-    const tax = subtotal * 0.08; // 8% tax
-    const total = subtotal + deliveryFee + tax;
+    const total = subtotal + deliveryFee;
 
     // Create order
     const order = await prisma.order.create({
@@ -130,7 +129,6 @@ export const createOrder = async (req: Request, res: Response) => {
         restaurantId,
         subtotal,
         deliveryFee,
-        tax,
         total,
         status: 'pending',
         paymentMethod: paymentMethod as PaymentMethod,
@@ -138,10 +136,6 @@ export const createOrder = async (req: Request, res: Response) => {
           ? 'pending'
           : 'pending',
         deliveryStreet: deliveryAddress.street,
-        deliveryCity: deliveryAddress.city,
-        deliveryState: deliveryAddress.state,
-        deliveryZipCode: deliveryAddress.zipCode,
-        deliveryCountry: deliveryAddress.country,
         deliveryLatitude: deliveryAddress.latitude,
         deliveryLongitude: deliveryAddress.longitude,
         deliveryInstructions: deliveryAddress.instructions,
@@ -216,16 +210,16 @@ export const getOrder = async (req: Request, res: Response) => {
             ownerId: true,
           },
         },
-        driver: {
-          select: {
-            id: true,
-            name: true,
-            phone: true,
-          },
-        },
         payment: true,
         delivery: {
           include: {
+            driver: {
+              select: {
+                id: true,
+                name: true,
+                phone: true,
+              },
+            },
             route: true,
           },
         },
@@ -292,16 +286,30 @@ export const getMyOrders = async (req: Request, res: Response) => {
     if (userRole === 'customer') {
       where.customerId = userId;
     } else if (userRole === 'restaurant_owner') {
-      // Get restaurant IDs owned by user
-      const restaurants = await prisma.restaurant.findMany({
+      // Get restaurant owned by user (one owner = one restaurant)
+      const restaurant = await prisma.restaurant.findFirst({
         where: { ownerId: userId },
         select: { id: true },
       });
-      where.restaurantId = {
-        in: restaurants.map((r) => r.id),
-      };
+      if (restaurant) {
+        where.restaurantId = restaurant.id;
+      } else {
+        // Owner has no restaurant
+        return res.json({
+          success: true,
+          data: [],
+          pagination: {
+            page: Number(page),
+            pageSize: Number(pageSize),
+            total: 0,
+            totalPages: 0,
+          },
+        });
+      }
     } else if (userRole === 'driver') {
-      where.driverId = userId;
+      where.delivery = {
+        driverId: userId,
+      };
     }
 
     if (status) {
@@ -331,7 +339,7 @@ export const getMyOrders = async (req: Request, res: Response) => {
     // Transform orders to include deliveryAddress
     const ordersWithAddress = orders.map((order) => ({
       ...order,
-      deliveryAddress: `${order.deliveryStreet}, ${order.deliveryCity}, ${order.deliveryState} ${order.deliveryZipCode}`,
+      deliveryAddress: order.deliveryStreet,
     }));
 
     res.json({
@@ -371,6 +379,7 @@ export const updateOrderStatus = async (req: Request, res: Response) => {
       where: { id },
       include: {
         restaurant: true,
+        delivery: true,
       },
     });
 
@@ -447,19 +456,62 @@ export const assignDriver = async (req: Request, res: Response) => {
     const { orderId } = req.params;
     const { driverId } = req.body;
 
+    // Create or update delivery record
     const order = await prisma.order.update({
       where: { id: orderId },
       data: {
-        driverId,
         status: 'confirmed',
       },
       include: {
         restaurant: true,
-        driver: {
-          select: {
-            id: true,
-            name: true,
-            phone: true,
+        delivery: {
+          include: {
+            driver: {
+              select: {
+                id: true,
+                name: true,
+                phone: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    // Create delivery record if it doesn't exist
+    if (!order.delivery) {
+      await prisma.delivery.create({
+        data: {
+          orderId: orderId,
+          driverId: driverId,
+          status: 'assigned',
+        },
+      });
+    } else {
+      // Update existing delivery
+      await prisma.delivery.update({
+        where: { orderId: orderId },
+        data: {
+          driverId: driverId,
+          status: 'assigned',
+        },
+      });
+    }
+
+    // Fetch the updated order with delivery
+    const updatedOrder = await prisma.order.findUnique({
+      where: { id: orderId },
+      include: {
+        restaurant: true,
+        delivery: {
+          include: {
+            driver: {
+              select: {
+                id: true,
+                name: true,
+                phone: true,
+              },
+            },
           },
         },
       },
@@ -467,7 +519,7 @@ export const assignDriver = async (req: Request, res: Response) => {
 
     res.json({
       success: true,
-      data: order,
+      data: updatedOrder,
       message: 'Driver assigned successfully',
     });
   } catch (error) {

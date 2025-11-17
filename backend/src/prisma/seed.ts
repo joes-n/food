@@ -93,17 +93,16 @@ async function main() {
   // Create restaurants
   const restaurants = await Promise.all([
     prisma.restaurant.upsert({
-      where: { id: 'Pizza Palace' },
+      where: { name: 'Pizza Palace' },
       update: {},
       create: {
-        id: 'Pizza Palace',
         name: 'Pizza Palace',
         description: 'Authentic Italian pizza with fresh ingredients and traditional recipes passed down for generations',
         cuisine: 'Italian',
         rating: 4.5,
         totalReviews: 234,
         priceRange: 'medium',
-        address: '123 Main Street, New York, NY 10001',
+        address: '123 Main Street, Tsim Sha Tsui, Kowloon',
         phone: '+1234567890',
         email: 'info@pizzapalace.com',
         ownerId: owner1.id,
@@ -116,17 +115,16 @@ async function main() {
     }),
 
     prisma.restaurant.upsert({
-      where: { id: 'Sushi Master' },
+      where: { name: 'Sushi Master' },
       update: {},
       create: {
-        id: 'Sushi Master',
         name: 'Sushi Master',
         description: 'Fresh sushi and Japanese cuisine prepared by expert chefs with the finest ingredients',
         cuisine: 'Japanese',
         rating: 4.8,
         totalReviews: 189,
         priceRange: 'premium',
-        address: '456 Oak Avenue, Los Angeles, CA 90001',
+        address: '456 Oak Avenue, North Point, Hong Kong',
         phone: '+1234567891',
         email: 'order@sushimaster.com',
         ownerId: owner2.id,
@@ -139,17 +137,16 @@ async function main() {
     }),
 
     prisma.restaurant.upsert({
-      where: { id: 'Taco Ville' },
+      where: { name: 'Taco Ville' },
       update: {},
       create: {
-        id: 'Taco Ville',
         name: 'Taco Ville',
         description: 'Authentic Mexican tacos, burritos, and more with traditional flavors and fresh ingredients',
         cuisine: 'Mexican',
         rating: 4.3,
         totalReviews: 156,
         priceRange: 'budget',
-        address: '789 Elm Street, Chicago, IL 60601',
+        address: '789 Elm Street, Sham Shui Po, Kowloon',
         phone: '+1234567892',
         email: 'hello@tacoville.com',
         ownerId: owner3.id,
@@ -162,17 +159,16 @@ async function main() {
     }),
 
     prisma.restaurant.upsert({
-      where: { id: 'Burger Blast' },
+      where: { name: 'Burger Blast' },
       update: {},
       create: {
-        id: 'Burger Blast',
         name: 'Burger Blast',
         description: 'Juicy burgers made with 100% beef, fresh vegetables, and our signature sauces',
         cuisine: 'American',
         rating: 4.2,
         totalReviews: 298,
         priceRange: 'budget',
-        address: '321 Pine Road, San Francisco, CA 94102',
+        address: '321 Pine Road, Yuen Long, New Territories',
         phone: '+1234567893',
         email: 'contact@burgerblast.com',
         ownerId: owner4.id,
@@ -185,17 +181,16 @@ async function main() {
     }),
 
     prisma.restaurant.upsert({
-      where: { id: 'Curry House' },
+      where: { name: 'Curry House' },
       update: {},
       create: {
-        id: 'Curry House',
         name: 'Curry House',
         description: 'Authentic Indian curry and traditional dishes with aromatic spices and flavors',
         cuisine: 'Indian',
         rating: 4.6,
         totalReviews: 167,
         priceRange: 'medium',
-        address: '654 Maple Drive, Seattle, WA 98101',
+        address: '654 Maple Drive, Causeway Bay, Hong Kong',
         phone: '+1234567894',
         email: 'orders@curryhouse.com',
         ownerId: owner5.id,
@@ -208,17 +203,16 @@ async function main() {
     }),
 
     prisma.restaurant.upsert({
-      where: { id: 'Dragon Wok' },
+      where: { name: 'Dragon Wok' },
       update: {},
       create: {
-        id: 'Dragon Wok',
         name: 'Dragon Wok',
         description: 'Delicious Chinese cuisine with fresh ingredients and traditional cooking techniques',
         cuisine: 'Chinese',
         rating: 4.4,
         totalReviews: 203,
         priceRange: 'budget',
-        address: '987 Cedar Lane, Boston, MA 02101',
+        address: '987 Cedar Lane, Mong Kok, Kowloon',
         phone: '+1234567895',
         email: 'info@dragonwok.com',
         ownerId: owner6.id,

@@ -67,9 +67,6 @@ describe('Order Management Controller', () => {
           restaurantId: 'rest-1',
           status: 'pending',
           deliveryStreet: '123 Main St',
-          deliveryCity: 'Anytown',
-          deliveryState: 'CA',
-          deliveryZipCode: '12345',
           customer: {
             id: 'customer-1',
             name: 'John Doe',
@@ -98,10 +95,13 @@ describe('Order Management Controller', () => {
             id: 'payment-1',
             amount: 25.99,
           },
-          driver: {
-            id: 'driver-1',
-            name: 'Mike Driver',
-            phone: '555-5678',
+          delivery: {
+            id: 'delivery-1',
+            driver: {
+              id: 'driver-1',
+              name: 'Mike Driver',
+              phone: '555-5678',
+            },
           },
         },
       ];
@@ -141,11 +141,15 @@ describe('Order Management Controller', () => {
             },
           },
           payment: true,
-          driver: {
-            select: {
-              id: true,
-              name: true,
-              phone: true,
+          delivery: {
+            include: {
+              driver: {
+                select: {
+                  id: true,
+                  name: true,
+                  phone: true,
+                },
+              },
             },
           },
         },
@@ -156,7 +160,7 @@ describe('Order Management Controller', () => {
         data: [
           {
             ...mockOrders[0],
-            deliveryAddress: '123 Main St, Anytown, CA 12345',
+            deliveryAddress: '123 Main St',
           },
         ],
       });
@@ -174,9 +178,6 @@ describe('Order Management Controller', () => {
           restaurantId: 'rest-1',
           status: 'confirmed',
           deliveryStreet: '123 Main St',
-          deliveryCity: 'Anytown',
-          deliveryState: 'CA',
-          deliveryZipCode: '12345',
           customer: {
             id: 'customer-1',
             name: 'John Doe',
@@ -185,7 +186,7 @@ describe('Order Management Controller', () => {
           },
           items: [],
           payment: null,
-          driver: null,
+          delivery: null,
         },
       ];
 
@@ -222,11 +223,15 @@ describe('Order Management Controller', () => {
             },
           },
           payment: true,
-          driver: {
-            select: {
-              id: true,
-              name: true,
-              phone: true,
+          delivery: {
+            include: {
+              driver: {
+                select: {
+                  id: true,
+                  name: true,
+                  phone: true,
+                },
+              },
             },
           },
         },
@@ -246,9 +251,6 @@ describe('Order Management Controller', () => {
           restaurantId: 'rest-1',
           status: 'pending',
           deliveryStreet: '123 Main St',
-          deliveryCity: 'Anytown',
-          deliveryState: 'CA',
-          deliveryZipCode: '12345',
           customer: {
             id: 'customer-1',
             name: 'John Doe',
@@ -257,7 +259,7 @@ describe('Order Management Controller', () => {
           },
           items: [],
           payment: null,
-          driver: null,
+          delivery: null,
         },
       ];
 
@@ -275,7 +277,7 @@ describe('Order Management Controller', () => {
         data: [
           {
             ...mockOrders[0],
-            deliveryAddress: '123 Main St, Anytown, CA 12345',
+            deliveryAddress: '123 Main St',
           },
         ],
       });
