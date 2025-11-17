@@ -83,6 +83,12 @@ app.get('/api/debug-env', (req, res) => {
     PORT: process.env.PORT,
     SERVER_URL: process.env.SERVER_URL,
     CLIENT_URL: process.env.CLIENT_URL,
+    // Check for Railway-specific env vars
+    RAILWAY_PUBLIC_DOMAIN: process.env.RAILWAY_PUBLIC_DOMAIN,
+    RAILWAY_STATIC_URL: process.env.RAILWAY_STATIC_URL,
+    RAILWAY_DEPLOYMENT_ID: process.env.RAILWAY_DEPLOYMENT_ID,
+    // List all env vars containing 'URL' or 'RAILWAY'
+    relatedEnvVars: Object.keys(process.env).filter(k => k.includes('URL') || k.includes('RAILWAY')),
   });
 });
 
