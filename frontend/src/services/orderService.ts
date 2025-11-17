@@ -2,10 +2,6 @@ import api from './api';
 
 export interface DeliveryAddress {
   street: string;
-  city: string;
-  state: string;
-  zipCode: string;
-  country: string;
   latitude?: number;
   longitude?: number;
   instructions?: string;
@@ -40,16 +36,11 @@ export interface Order {
   subtotal: number;
   deliveryFee: number;
   discount: number;
-  tax: number;
   total: number;
   status: string;
   paymentMethod: string;
   paymentStatus: string;
   deliveryStreet: string;
-  deliveryCity: string;
-  deliveryState: string;
-  deliveryZipCode: string;
-  deliveryCountry: string;
   deliveryInstructions?: string;
   scheduledFor?: string;
   notes?: string;

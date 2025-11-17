@@ -55,7 +55,6 @@ model User {
   name      String
   role      UserRole
   phone     String?
-  avatar    String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -211,16 +210,11 @@ model Order {
   subtotal          Float
   deliveryFee       Float
   discount          Float         @default(0)
-  tax               Float         @default(0)
   total             Float
   status            OrderStatus   @default(pending)
   paymentMethod     PaymentMethod
   paymentStatus     PaymentStatus @default(pending)
   deliveryStreet    String
-  deliveryCity      String
-  deliveryState     String
-  deliveryZipCode   String
-  deliveryCountry   String
   deliveryLatitude  Float?
   deliveryLongitude Float?
   deliveryInstructions String?
