@@ -73,62 +73,61 @@
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                     Client Layer                         │
-│  ┌──────────────┐                                    │
-│  │   Web App    │  (React + Vite + Tailwind)        │
-│  │   (React)    │  - Customer Interface             │
-│  └──────────────┘  - Owner Dashboard                │
-│                   - Admin Features                     │
+│                     Client Layer                        │
+│  ┌──────────────┐                                       │
+│  │   Web App    │  (React + Vite + Tailwind)            │
+│  │   (React)    │  - Customer Interface                 │
+│  └──────────────┘  - Owner Dashboard                    │
+│                    - Admin Features                     │
 └─────────────────────────────────────────────────────────┘
                             │
                             │ HTTPS / WebSocket
                             │
 ┌─────────────────────────────────────────────────────────┐
-│                    API Gateway                           │
-│              (Express.js Server)                         │
-│  ┌──────────────────────────────────────────────────┐  │
-│  │  REST Endpoints  │  WebSocket  │  Middleware     │  │
-│  │  - Auth          │  - Tracking │  - Validation   │  │
-│  │  - Orders        │  - Chat     │  - CORS         │  │
-│  │  - Restaurants   │  - Location │  - Auth         │  │
-│  │  - Menu/Items    │  - Status   │                 │  │
-│  │  - Payment       │  Updates    │                 │  │
-│  │  - Stats         │             │                 │  │
-│  └──────────────────────────────────────────────────┘  │
+│                    API Gateway                          │
+│                (Express.js Server)                      │
+│  ┌──────────────────────────────────────────────────┐   │
+│  │  REST Endpoints  │  WebSocket  │  Middleware     │   │
+│  │ - Auth           │ - Tracking  │ - Validation    │   │
+│  │ - Orders         │ - Chat      │ - CORS          │   │
+│  │ - Restaurants    │ - Location  │ - Authenticaiton│   │
+│  │ - Menu/Items     │ - Status    │                 │   │
+│  │ - Payment        │   Updates   │                 │   │
+│  │ - Stats          │             │                 │   │
+│  └──────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────┘
                             │
                             │
 ┌─────────────────────────────────────────────────────────┐
-│                 Business Logic Layer                     │
-│  ┌─────────────┐ ┌─────────────┐ ┌──────────────────┐  │
-│  │ Controllers │ │             │ │   Middleware     │  │
-│  │ (HTTP)      │ │             │ │ (Auth, Valid.)   │  │
-│  │ (Business   │ │  Direct     │ │                 │  │
-│  │  Logic)     │ │  Prisma     │ │                 │  │
-│  └─────────────┘ │  Access     │ └──────────────────┘  │
-│                   └─────────────┘                       │
+│                 Business Logic Layer                    │
+│  ┌─────────────┐ ┌─────────────┐ ┌──────────────────┐   │
+│  │ Controllers │ │   Direct    │ │    Middleware    │   │
+│  │ (HTTP)      │ │   Prsima    │ │  (Authorization, │   │
+│  │ (Business   │ │   Access    │ │    Validation)   │   │
+│  │  Logic)     │ │             │ │                  │   │
+│  └─────────────┘ └─────────────┘ └──────────────────┘   │
 └─────────────────────────────────────────────────────────┘
                             │
                             │
 ┌─────────────────────────────────────────────────────────┐
-│                    Data Access Layer                     │
-│              (Prisma ORM)                               │
-│  ┌──────────────────────────────────────────────────┐  │
-│  │  Prisma Client (Direct Database Access)         │  │
-│  │  - Type-safe queries                             │  │
-│  │  - Migrations                                    │  │
-│  │  - No caching layer                              │  │
-│  └──────────────────────────────────────────────────┘  │
+│                    Data Access Layer                    │
+│                      (Prisma ORM)                       │
+│  ┌──────────────────────────────────────────────────┐   │
+│  │  Prisma Client (Direct Database Access)          │   │
+│  │  - Type-safe queries                             │   │
+│  │  - Migrations                                    │   │
+│  │  - No caching layer                              │   │
+│  └──────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────┘
                             │
                             │
 ┌─────────────────────────────────────────────────────────┐
-│                  External Services                       │
-│  ┌─────────────┐ ┌─────────────┐ ┌──────────────────┐  │
-│  │  Payments   │ │  Email/SMS  │ │    Maps API      │  │
-│  │ (Stripe)    │ │ (SendGrid/  │ │  (Google Maps)   │  │
-│  │             │ │  Nodemailer)│ │                  │  │
-│  └─────────────┘ └─────────────┘ └──────────────────┘  │
+│                  External Services                      │
+│  ┌─────────────┐ ┌─────────────┐ ┌──────────────────┐   │
+│  │  Payments   │ │  Email/SMS  │ │     Maps API     │   │
+│  │  (Stripe)   │ │ (SendGrid/  │ │  (Google Maps)   │   │
+│  │             │ │  Nodemailer)│ │                  │   │
+│  └─────────────┘ └─────────────┘ └──────────────────┘   │
 └─────────────────────────────────────────────────────────┘
 ```
 
