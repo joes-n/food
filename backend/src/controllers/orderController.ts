@@ -242,7 +242,7 @@ export const getOrder = async (req: Request, res: Response) => {
     // Check authorization
     const isOwner = order.customerId === userId;
     const isRestaurantOwner = order.restaurant.ownerId === userId;
-    const isDriver = order.driverId === userId;
+    const isDriver = order.delivery?.driverId === userId;
     const isAdmin = userRole === 'admin';
 
     if (!isOwner && !isRestaurantOwner && !isDriver && !isAdmin) {
@@ -255,7 +255,7 @@ export const getOrder = async (req: Request, res: Response) => {
     // Transform order to include deliveryAddress
     const orderWithAddress = {
       ...order,
-      deliveryAddress: `${order.deliveryStreet}, ${order.deliveryCity}, ${order.deliveryState} ${order.deliveryZipCode}`,
+      deliveryAddress: order.deliveryStreet,
     };
 
     res.json({
@@ -383,7 +383,7 @@ export const updateOrderStatus = async (req: Request, res: Response) => {
 
     // Check authorization
     const isRestaurantOwner = order.restaurant.ownerId === userId;
-    const isDriver = order.driverId === userId;
+    const isDriver = order.delivery?.driverId === userId;
     const isAdmin = userRole === 'admin';
 
     if (!isRestaurantOwner && !isDriver && !isAdmin) {
