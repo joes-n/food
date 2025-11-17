@@ -53,7 +53,16 @@ router.post('/image', authenticate, upload.single('image'), async (req: Request,
     }
 
     // Return the full file URL including backend host
-    const baseUrl = process.env.SERVER_URL || `http://localhost:${process.env.PORT || 5000}`;
+    const serverUrl = process.env.SERVER_URL;
+    let baseUrl: string;
+
+    if (serverUrl) {
+      // Remove trailing slash if present to avoid double slashes
+      baseUrl = serverUrl.replace(/\/$/, '');
+    } else {
+      baseUrl = `http://localhost:${process.env.PORT || 5000}`;
+    }
+
     const fileUrl = `${baseUrl}/uploads/${req.file.filename}`;
     res.json({
       success: true,
