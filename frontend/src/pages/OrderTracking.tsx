@@ -98,9 +98,7 @@ export function OrderTracking() {
           <div className="bg-white rounded-lg shadow-md p-6 mb-6">
             <h2 className="text-2xl font-bold mb-4">Delivery Address</h2>
             <p className="text-gray-700">
-              {order.deliveryStreet}<br />
-              {order.deliveryCity}, {order.deliveryState} {order.deliveryZipCode}<br />
-              {order.deliveryCountry}
+              {order.deliveryStreet}
             </p>
             {order.deliveryInstructions && (
               <div className="mt-4">
@@ -110,24 +108,6 @@ export function OrderTracking() {
             )}
           </div>
 
-          {order.driver && (
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h2 className="text-2xl font-bold mb-4">Your Driver</h2>
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center">
-                  <span className="text-xl font-bold">
-                    {order.driver.name.charAt(0)}
-                  </span>
-                </div>
-                <div>
-                  <p className="font-semibold">{order.driver.name}</p>
-                  {order.driver.phone && (
-                    <p className="text-gray-600 text-sm">{order.driver.phone}</p>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </div>
