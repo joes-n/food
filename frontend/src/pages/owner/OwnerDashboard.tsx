@@ -24,9 +24,8 @@ export function OwnerDashboard() {
   const user = useAuthStore((state) => state.user);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const [checkingAuth, setCheckingAuth] = useState(true);
-  const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
+  const [restaurant, setRestaurant] = useState<Restaurant | null>(null);
   const [loading, setLoading] = useState(true);
-  const [selectedRestaurant, setSelectedRestaurant] = useState<Restaurant | null>(null);
   const [stats, setStats] = useState<any>(null);
 
   useEffect(() => {
@@ -49,24 +48,22 @@ export function OwnerDashboard() {
     }
 
     setCheckingAuth(false);
-    loadRestaurants();
+    loadRestaurant();
   }, [isAuthenticated, user, navigate]);
 
   useEffect(() => {
-    if (restaurants.length > 0) {
-      const restaurant = restaurants[0];
-      setSelectedRestaurant(restaurant);
+    if (restaurant) {
       loadStats(restaurant.id);
     }
-  }, [restaurants]);
+  }, [restaurant]);
 
-  const loadRestaurants = async () => {
+  const loadRestaurant = async () => {
     try {
       setLoading(true);
-      const response = await ownerService.getMyRestaurants();
-      setRestaurants(response);
+      const data = await ownerService.getMyRestaurants();
+      setRestaurant(data);
     } catch (error) {
-      toast.error('Failed to load restaurants');
+      toast.error('Failed to load restaurant');
     } finally {
       setLoading(false);
     }
@@ -88,12 +85,12 @@ export function OwnerDashboard() {
       </div>
     );
   }
-  if (restaurants.length === 0) {
+  if (!restaurant) {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="bg-white rounded-lg shadow-md p-8 text-center">
-          <h2 className="text-2xl font-bold mb-4">No Restaurants Found</h2>
-          <p className="text-gray-600 mb-6">You don't have any restaurants yet.</p>
+          <h2 className="text-2xl font-bold mb-4">No Restaurant Found</h2>
+          <p className="text-gray-600 mb-6">You don't have a restaurant yet.</p>
           <Link to="/owner/restaurants/new" className="btn-primary">
             Create Restaurant
           </Link>
@@ -111,7 +108,7 @@ export function OwnerDashboard() {
       </div>
 
 
-      {selectedRestaurant && stats && (
+      {restaurant && stats && (
         <>
           {/* Quick Stats */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">

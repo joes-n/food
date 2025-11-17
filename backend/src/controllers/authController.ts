@@ -90,7 +90,6 @@ export const login = async (req: Request, res: Response) => {
         name: true,
         role: true,
         phone: true,
-        avatar: true,
       },
     });
 
@@ -152,7 +151,6 @@ export const getCurrentUser = async (req: Request, res: Response) => {
         name: true,
         role: true,
         phone: true,
-        avatar: true,
         createdAt: true,
         updatedAt: true,
       },
@@ -181,7 +179,7 @@ export const getCurrentUser = async (req: Request, res: Response) => {
 export const updateProfile = async (req: Request, res: Response) => {
   try {
     const userId = req.user?.id;
-    const { name, phone, avatar } = req.body;
+    const { name, phone } = req.body;
 
     if (!userId) {
       return res.status(401).json({
@@ -195,7 +193,6 @@ export const updateProfile = async (req: Request, res: Response) => {
       data: {
         name,
         phone,
-        avatar,
       },
       select: {
         id: true,
@@ -203,7 +200,6 @@ export const updateProfile = async (req: Request, res: Response) => {
         name: true,
         role: true,
         phone: true,
-        avatar: true,
         updatedAt: true,
       },
     });

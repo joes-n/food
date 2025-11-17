@@ -212,7 +212,6 @@ describe('Auth Controller', () => {
         name: 'Test User',
         role: 'CUSTOMER',
         phone: '1234567890',
-        avatar: null,
       };
 
       (prisma.user.findUnique as jest.Mock).mockResolvedValue(mockUser);
@@ -230,7 +229,6 @@ describe('Auth Controller', () => {
           name: true,
           role: true,
           phone: true,
-          avatar: true,
         },
       });
       expect(bcryptMock.compare).toHaveBeenCalledWith(
@@ -251,8 +249,7 @@ describe('Auth Controller', () => {
             name: 'Test User',
             role: 'CUSTOMER',
             phone: '1234567890',
-            avatar: null,
-          },
+              },
           token: 'mock-jwt-token',
         },
         message: 'Login successful',
@@ -281,7 +278,6 @@ describe('Auth Controller', () => {
         name: 'Test User',
         role: 'CUSTOMER',
         phone: null,
-        avatar: null,
       };
 
       (prisma.user.findUnique as jest.Mock).mockResolvedValue(mockUser);
@@ -323,7 +319,6 @@ describe('Auth Controller', () => {
         name: 'Test User',
         role: 'CUSTOMER',
         phone: '1234567890',
-        avatar: null,
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -342,7 +337,6 @@ describe('Auth Controller', () => {
           name: true,
           role: true,
           phone: true,
-          avatar: true,
           createdAt: true,
           updatedAt: true,
         },
@@ -400,7 +394,6 @@ describe('Auth Controller', () => {
     const updateData = {
       name: 'Updated Name',
       phone: '9876543210',
-      avatar: 'new-avatar-url',
     };
 
     it('should update profile successfully', async () => {
@@ -410,8 +403,7 @@ describe('Auth Controller', () => {
         name: 'Updated Name',
         role: 'CUSTOMER',
         phone: '9876543210',
-        avatar: 'new-avatar-url',
-        updatedAt: new Date(),
+          updatedAt: new Date(),
       };
 
       (prisma.user.update as jest.Mock).mockResolvedValue(mockUpdatedUser);
@@ -426,15 +418,13 @@ describe('Auth Controller', () => {
         data: {
           name: 'Updated Name',
           phone: '9876543210',
-          avatar: 'new-avatar-url',
-        },
+            },
         select: {
           id: true,
           email: true,
           name: true,
           role: true,
           phone: true,
-          avatar: true,
           updatedAt: true,
         },
       });
@@ -468,7 +458,6 @@ describe('Auth Controller', () => {
         name: 'Only Name Updated',
         role: 'CUSTOMER',
         phone: null,
-        avatar: null,
         updatedAt: new Date(),
       };
 

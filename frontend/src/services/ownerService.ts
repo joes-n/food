@@ -1,10 +1,10 @@
 import api from './api';
 
 export const ownerService = {
-  // Get my restaurants
+  // Get my restaurant (one owner = one restaurant)
   async getMyRestaurants() {
     const response = await api.get('/restaurants/my/all');
-    return response.data.data;
+    return response.data.data; // Returns single restaurant, not array
   },
 
   // Update restaurant
