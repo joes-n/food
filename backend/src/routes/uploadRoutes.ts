@@ -53,17 +53,38 @@ router.post('/image', authenticate, upload.single('image'), async (req: Request,
     }
 
     // Return the full file URL including backend host
+    // Use the /api/upload/file/:filename endpoint to serve the file
     const serverUrl = process.env.SERVER_URL;
+    const railwayPublicDomain = process.env.RAILWAY_PUBLIC_DOMAIN;
+    const railwayStaticUrl = process.env.RAILWAY_STATIC_URL;
+
+    // Debug logging
+    console.log('Upload Debug - SERVER_URL:', serverUrl);
+    console.log('Upload Debug - RAILWAY_PUBLIC_DOMAIN:', railwayPublicDomain);
+    console.log('Upload Debug - RAILWAY_STATIC_URL:', railwayStaticUrl);
+
     let baseUrl: string;
 
     if (serverUrl) {
       // Remove trailing slash if present to avoid double slashes
       baseUrl = serverUrl.replace(/\/$/, '');
+      console.log('✓ Using SERVER_URL:', baseUrl);
+    } else if (railwayPublicDomain) {
+      // Railway automatically provides this
+      baseUrl = `https://${railwayPublicDomain}`;
+      console.log('✓ Using RAILWAY_PUBLIC_DOMAIN:', baseUrl);
+    } else if (railwayStaticUrl) {
+      // Alternative Railway variable
+      baseUrl = railwayStaticUrl.replace(/\/$/, '');
+      console.log('✓ Using RAILWAY_STATIC_URL:', baseUrl);
     } else {
       baseUrl = `http://localhost:${process.env.PORT || 5000}`;
+      console.log('⚠ Using localhost fallback:', baseUrl);
     }
 
-    const fileUrl = `${baseUrl}/uploads/${req.file.filename}`;
+    // Use the file serving endpoint, not direct uploads path
+    const fileUrl = `${baseUrl}/api/upload/file/${req.file.filename}`;
+    console.log('✓ Final file URL:', fileUrl);
     res.json({
       success: true,
       data: {
