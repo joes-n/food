@@ -108,8 +108,7 @@ Authenticate user and get JWT token.
       "email": "user@example.com",
       "name": "John Doe",
       "role": "customer",
-      "phone": "+1234567890",
-      "avatar": "string"
+      "phone": "+1234567890"
     },
     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
   },
@@ -142,7 +141,6 @@ Get the currently authenticated user's profile.
     "name": "John Doe",
     "role": "customer",
     "phone": "+1234567890",
-    "avatar": "string",
     "createdAt": "2024-01-01T00:00:00Z",
     "updatedAt": "2024-01-01T00:00:00Z"
   }
@@ -168,8 +166,7 @@ Update the current user's profile information.
 ```json
 {
   "name": "John Smith",
-  "phone": "+1234567890",
-  "avatar": "https://example.com/avatar.jpg"
+  "phone": "+1234567890"
 }
 ```
 
@@ -183,7 +180,6 @@ Update the current user's profile information.
     "name": "John Smith",
     "role": "customer",
     "phone": "+1234567890",
-    "avatar": "https://example.com/avatar.jpg",
     "updatedAt": "2024-01-01T00:00:00Z"
   },
   "message": "Profile updated successfully"
