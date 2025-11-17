@@ -63,11 +63,15 @@ export const getRestaurantOrders = async (req: Request, res: Response) => {
           },
         },
         payment: true,
-        driver: {
-          select: {
-            id: true,
-            name: true,
-            phone: true,
+        delivery: {
+          include: {
+            driver: {
+              select: {
+                id: true,
+                name: true,
+                phone: true,
+              },
+            },
           },
         },
       },
@@ -77,7 +81,7 @@ export const getRestaurantOrders = async (req: Request, res: Response) => {
     // Transform orders to include deliveryAddress
     const ordersWithAddress = orders.map((order) => ({
       ...order,
-      deliveryAddress: `${order.deliveryStreet}, ${order.deliveryCity}, ${order.deliveryState} ${order.deliveryZipCode}`,
+      deliveryAddress: order.deliveryStreet,
     }));
 
     res.json({

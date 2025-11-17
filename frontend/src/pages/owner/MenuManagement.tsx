@@ -57,15 +57,14 @@ export function MenuManagement() {
   const loadMenuItems = async () => {
     try {
       setLoading(true);
-      // First get the owner's restaurant
-      const restaurantsResponse = await ownerService.getMyRestaurants();
-      if (!restaurantsResponse || restaurantsResponse.length === 0) {
+      // First get the owner's restaurant (one owner = one restaurant)
+      const restaurant = await ownerService.getMyRestaurants();
+      if (!restaurant) {
         toast.error('No restaurant found');
         navigate('/owner/dashboard');
         return;
       }
 
-      const restaurant = restaurantsResponse[0];
       setRestaurantId(restaurant.id);
 
       const response = await ownerService.getMenuItems(restaurant.id);

@@ -27,6 +27,7 @@ jest.mock('../server', () => ({
     restaurant: {
       findUnique: jest.fn(),
       findMany: jest.fn(),
+      findFirst: jest.fn(),
     },
     menuItem: {
       findUnique: jest.fn(),
@@ -36,6 +37,10 @@ jest.mock('../server', () => ({
       findUnique: jest.fn(),
       findMany: jest.fn(),
       count: jest.fn(),
+      update: jest.fn(),
+    },
+    delivery: {
+      create: jest.fn(),
       update: jest.fn(),
     },
   },
@@ -488,16 +493,16 @@ describe('Order Controller', () => {
               ownerId: true,
             },
           },
-          driver: {
-            select: {
-              id: true,
-              name: true,
-              phone: true,
-            },
-          },
           payment: true,
           delivery: {
             include: {
+              driver: {
+                select: {
+                  id: true,
+                  name: true,
+                  phone: true,
+                },
+              },
               route: true,
             },
           },
@@ -507,7 +512,7 @@ describe('Order Controller', () => {
         success: true,
         data: {
           ...mockOrder,
-          deliveryAddress: '123 Main St, Anytown, CA 12345',
+          deliveryAddress: '123 Main St',
         },
       });
     });
@@ -545,7 +550,7 @@ describe('Order Controller', () => {
         success: true,
         data: {
           ...mockOrder,
-          deliveryAddress: '123 Main St, Anytown, CA 12345',
+          deliveryAddress: '123 Main St',
         },
       });
     });
@@ -583,7 +588,7 @@ describe('Order Controller', () => {
         success: true,
         data: {
           ...mockOrder,
-          deliveryAddress: '123 Main St, Anytown, CA 12345',
+          deliveryAddress: '123 Main St',
         },
       });
     });
@@ -616,7 +621,7 @@ describe('Order Controller', () => {
         success: true,
         data: {
           ...mockOrder,
-          deliveryAddress: '123 Main St, Anytown, CA 12345',
+          deliveryAddress: '123 Main St',
         },
       });
     });
@@ -755,7 +760,7 @@ describe('Order Controller', () => {
         data: [
           {
             ...mockOrders[0],
-            deliveryAddress: '123 Main St, Anytown, CA 12345',
+            deliveryAddress: '123 Main St',
           },
         ],
         pagination: {
@@ -768,10 +773,7 @@ describe('Order Controller', () => {
     });
 
     it('should fetch orders for restaurant owner', async () => {
-      const mockRestaurants = [
-        { id: 'rest-1' },
-        { id: 'rest-2' },
-      ];
+      const mockRestaurant = { id: 'rest-1' };
 
       const mockOrders = [
         {
@@ -791,7 +793,7 @@ describe('Order Controller', () => {
         },
       ];
 
-      (prisma.restaurant.findMany as jest.Mock).mockResolvedValue(mockRestaurants);
+      (prisma.restaurant.findFirst as jest.Mock).mockResolvedValue(mockRestaurant);
       (prisma.order.findMany as jest.Mock).mockResolvedValue(mockOrders);
       (prisma.order.count as jest.Mock).mockResolvedValue(1);
 
@@ -802,9 +804,7 @@ describe('Order Controller', () => {
 
       expect(prisma.order.findMany).toHaveBeenCalledWith({
         where: {
-          restaurantId: {
-            in: ['rest-1', 'rest-2'],
-          },
+          restaurantId: 'rest-1',
         },
         skip: 0,
         take: 10,
@@ -850,7 +850,10 @@ describe('Order Controller', () => {
 
       expect(prisma.order.findMany).toHaveBeenCalledWith({
         where: {
+          delivery: {
+            driverId: 'user-1',
           },
+        },
         skip: 0,
         take: 10,
         orderBy: { createdAt: 'desc' },
@@ -963,7 +966,7 @@ describe('Order Controller', () => {
         data: [
           {
             ...mockOrders[0],
-            deliveryAddress: '123 Main St, Anytown, CA 12345',
+            deliveryAddress: '123 Main St',
           },
         ],
         pagination: {
@@ -1066,6 +1069,9 @@ describe('Order Controller', () => {
         restaurant: {
           id: 'rest-1',
           ownerId: 'owner-1',
+        },
+        delivery: {
+          driverId: 'user-1',
         },
       };
 
@@ -1300,14 +1306,18 @@ describe('Order Controller', () => {
           id: 'rest-1',
           name: 'Test Restaurant',
         },
-        driver: {
-          id: 'driver-1',
-          name: 'John Driver',
-          phone: '555-1234',
+        delivery: {
+          driver: {
+            id: 'driver-1',
+            name: 'John Driver',
+            phone: '555-1234',
+          },
         },
       };
 
       (prisma.order.update as jest.Mock).mockResolvedValue(mockOrder);
+      (prisma.delivery.create as jest.Mock).mockResolvedValue({});
+      (prisma.order.findUnique as jest.Mock).mockResolvedValue(mockOrder);
 
       mockRequest.params = { orderId: 'order-1' };
       mockRequest.body = { driverId: 'driver-1' };
@@ -1317,15 +1327,19 @@ describe('Order Controller', () => {
       expect(prisma.order.update).toHaveBeenCalledWith({
         where: { id: 'order-1' },
         data: {
-            status: 'confirmed',
+          status: 'confirmed',
         },
         include: {
           restaurant: true,
-          driver: {
-            select: {
-              id: true,
-              name: true,
-              phone: true,
+          delivery: {
+            include: {
+              driver: {
+                select: {
+                  id: true,
+                  name: true,
+                  phone: true,
+                },
+              },
             },
           },
         },

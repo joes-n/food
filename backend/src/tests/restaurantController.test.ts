@@ -389,7 +389,6 @@ describe('Restaurant Controller', () => {
             customer: {
               id: 'customer-1',
               name: 'John Doe',
-              avatar: 'avatar.jpg',
             },
           },
         ],
@@ -429,7 +428,6 @@ describe('Restaurant Controller', () => {
                 select: {
                   id: true,
                   name: true,
-                  avatar: true,
                 },
               },
             },
@@ -547,7 +545,6 @@ describe('Restaurant Controller', () => {
       });
       expect(prisma.restaurant.create).toHaveBeenCalledWith({
         data: {
-          id: 'New Restaurant',
           name: 'New Restaurant',
           description: 'Great food',
           cuisine: 'Italian',
@@ -634,7 +631,6 @@ describe('Restaurant Controller', () => {
 
       expect(prisma.restaurant.create).toHaveBeenCalledWith({
         data: {
-          id: 'New Restaurant',
           name: 'New Restaurant',
           description: 'Great food',
           cuisine: 'Italian',
@@ -1152,87 +1148,71 @@ describe('Restaurant Controller', () => {
 
   describe('getMyRestaurants', () => {
     it('should fetch restaurants for restaurant owner', async () => {
-      const mockRestaurants = [
-        {
-          id: 'rest-1',
-          name: 'My Restaurant',
-          isActive: true,
-          _count: {
-            orders: 10,
-            reviews: 5,
-            categories: 3,
-          },
+      const mockRestaurant = {
+        id: 'rest-1',
+        name: 'My Restaurant',
+        isActive: true,
+        _count: {
+          orders: 10,
+          reviews: 5,
+          categories: 3,
         },
-      ];
+      };
 
-      (prisma.restaurant.findMany as jest.Mock).mockResolvedValue(mockRestaurants);
+      (prisma.restaurant.findFirst as jest.Mock).mockResolvedValue(mockRestaurant);
 
       mockRequest.user = { id: 'user-1', email: 'owner@example.com', role: 'restaurant_owner' };
 
       await getMyRestaurants(mockRequest as Request, mockResponse as Response);
 
-      expect(prisma.restaurant.findMany).toHaveBeenCalledWith({
+      expect(prisma.restaurant.findFirst).toHaveBeenCalledWith({
         where: { ownerId: 'user-1' },
         include: {
           _count: {
             select: { orders: true, reviews: true, categories: true },
           },
         },
-        orderBy: { createdAt: 'desc' },
       });
       expect(responseJson).toHaveBeenCalledWith({
         success: true,
-        data: mockRestaurants,
+        data: mockRestaurant,
       });
     });
 
     it('should fetch all restaurants for admin', async () => {
-      const mockRestaurants = [
-        {
-          id: 'rest-1',
-          name: 'Restaurant 1',
-          isActive: true,
-          _count: {
-            orders: 10,
-            reviews: 5,
-            categories: 3,
-          },
+      const mockRestaurant = {
+        id: 'rest-1',
+        name: 'Restaurant 1',
+        isActive: true,
+        _count: {
+          orders: 10,
+          reviews: 5,
+          categories: 3,
         },
-        {
-          id: 'rest-2',
-          name: 'Restaurant 2',
-          isActive: true,
-          _count: {
-            orders: 15,
-            reviews: 8,
-            categories: 4,
-          },
-        },
-      ];
+      };
 
-      (prisma.restaurant.findMany as jest.Mock).mockResolvedValue(mockRestaurants);
+      (prisma.restaurant.findFirst as jest.Mock).mockResolvedValue(mockRestaurant);
 
       mockRequest.user = { id: 'admin-1', email: 'admin@example.com', role: 'admin' };
 
       await getMyRestaurants(mockRequest as Request, mockResponse as Response);
 
-      expect(prisma.restaurant.findMany).toHaveBeenCalledWith({
+      expect(prisma.restaurant.findFirst).toHaveBeenCalledWith({
         where: {},
         include: {
           _count: {
             select: { orders: true, reviews: true, categories: true },
           },
         },
-        orderBy: { createdAt: 'desc' },
       });
       expect(responseJson).toHaveBeenCalledWith({
         success: true,
-        data: mockRestaurants,
+        data: mockRestaurant,
       });
     });
 
     it('should return empty array when owner has no restaurants', async () => {
-      (prisma.restaurant.findMany as jest.Mock).mockResolvedValue([]);
+      (prisma.restaurant.findFirst as jest.Mock).mockResolvedValue(null);
 
       mockRequest.user = { id: 'user-1', email: 'owner@example.com', role: 'restaurant_owner' };
 
@@ -1240,7 +1220,7 @@ describe('Restaurant Controller', () => {
 
       expect(responseJson).toHaveBeenCalledWith({
         success: true,
-        data: [],
+        data: null,
       });
     });
 
@@ -1267,11 +1247,11 @@ describe('Restaurant Controller', () => {
         success: false,
         error: 'Only restaurant owners can view their restaurants',
       });
-      expect(prisma.restaurant.findMany).not.toHaveBeenCalled();
+      expect(prisma.restaurant.findFirst).not.toHaveBeenCalled();
     });
 
     it('should return 500 on database error', async () => {
-      (prisma.restaurant.findMany as jest.Mock).mockRejectedValue(
+      (prisma.restaurant.findFirst as jest.Mock).mockRejectedValue(
         new Error('Database error')
       );
 
@@ -1282,7 +1262,7 @@ describe('Restaurant Controller', () => {
       expect(responseStatus).toHaveBeenCalledWith(500);
       expect(responseJson).toHaveBeenCalledWith({
         success: false,
-        error: 'Failed to fetch restaurants',
+        error: 'Failed to fetch restaurant',
       });
     });
   });

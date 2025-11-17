@@ -85,6 +85,6 @@ export const restaurantService = {
 
   async getMyRestaurants() {
     const response = await api.get('/restaurants/my/all');
-    return response.data;
+    return response.data.data; // Returns single restaurant object
   },
 };
