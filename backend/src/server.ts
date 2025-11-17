@@ -77,6 +77,15 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+app.get('/api/debug-env', (req, res) => {
+  res.json({
+    NODE_ENV: process.env.NODE_ENV,
+    PORT: process.env.PORT,
+    SERVER_URL: process.env.SERVER_URL,
+    CLIENT_URL: process.env.CLIENT_URL,
+  });
+});
+
 // API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/restaurants', restaurantRoutes);
