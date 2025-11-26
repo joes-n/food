@@ -5,6 +5,7 @@ import { RestaurantDetail } from './pages/RestaurantDetail';
 import { Cart } from './pages/Cart';
 import { Checkout } from './pages/Checkout';
 import { OrderTracking } from './pages/OrderTracking';
+import { TrackOrderStatus } from './pages/TrackOrderStatus';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { Navbar } from './components/Navbar';
@@ -27,6 +28,7 @@ function AppContent() {
           <Route path="/restaurants/:id" element={<RestaurantDetail />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<Checkout />} />
+          <Route path="/track-order" element={<TrackOrderStatus />} />
           <Route path="/orders/:id" element={<OrderTracking />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />

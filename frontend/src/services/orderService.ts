@@ -7,15 +7,22 @@ export interface DeliveryAddress {
   instructions?: string;
 }
 
+export interface SelectedCustomization {
+  customizationId: string;
+  optionId: string;
+  optionName?: string;
+  priceModifier?: number;
+}
+
 export interface OrderItem {
+  id?: string;
+  orderId?: string;
   menuItemId: string;
+  menuItemName?: string;
   quantity: number;
-  customizations?: {
-    customizationId: string;
-    optionId: string;
-    optionName?: string;
-    priceModifier?: number;
-  }[];
+  price?: number;
+  subtotal?: number;
+  customizations?: SelectedCustomization[];
 }
 
 export interface CreateOrderRequest {

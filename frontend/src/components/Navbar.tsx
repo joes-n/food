@@ -22,7 +22,18 @@ export function Navbar() {
           <Link to="/" className="text-2xl font-bold text-[#ffffff]">LettucEat
           </Link>
           <div className="flex items-center space-x-6">
-            {isAuthenticated && user?.role !== 'restaurant_owner' && (
+            {isAuthenticated && user?.role === 'customer' && (
+              <>
+                <Link to="/track-order" className="text-[#ffffff] hover:text-[#10b981]">
+                  Track Order
+                </Link>
+                <Link to="/cart" className="text-[#ffffff] hover:text-[#10b981] flex items-center gap-1">
+                  <ShoppingCart size={20} />
+                  <span>Cart</span>
+                </Link>
+              </>
+            )}
+            {isAuthenticated && user && user.role !== 'restaurant_owner' && user.role !== 'customer' && (
               <Link to="/cart" className="text-[#ffffff] hover:text-[#10b981] flex items-center gap-1">
                 <ShoppingCart size={20} />
                 <span>Cart</span>
