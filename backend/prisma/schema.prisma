@@ -20,7 +20,6 @@ enum UserRole {
 enum OrderStatus {
   pending
   confirmed
-  preparing
   ready_for_pickup
   out_for_delivery
   delivered
@@ -409,4 +408,3 @@ model PromoCode {
   @@index([isActive])
   @@index([code])
   @@index([validFrom, validUntil])
-}
