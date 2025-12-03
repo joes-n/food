@@ -122,17 +122,15 @@ export const createOrderSchema = z.object({
             z.object({
               customizationId: z.string().uuid(),
               optionId: z.string().uuid(),
+              optionName: z.string().optional(),
+              priceModifier: z.number().optional(),
             })
           )
           .optional(),
       })
     ),
     deliveryAddress: z.object({
-      street: z.string(),
-      city: z.string(),
-      state: z.string(),
-      zipCode: z.string(),
-      country: z.string(),
+      street: z.string().min(1, 'Street address is required'),
       latitude: z.number().optional(),
       longitude: z.number().optional(),
       instructions: z.string().optional(),
