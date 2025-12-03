@@ -292,7 +292,7 @@ export function TrackOrderStatus() {
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-2xl font-bold">Live Status</h2>
                   <Link to={`/orders/${selectedOrder.id}`} className="text-primary-600 text-sm font-medium">
-                    Full view ->
+                    Full view {`->`}
                   </Link>
                 </div>
                 <OrderTracker
