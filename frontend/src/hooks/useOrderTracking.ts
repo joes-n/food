@@ -3,7 +3,7 @@ import { trackingService } from '../services/trackingService';
 
 export interface OrderStatus {
   orderId: string;
-  status: 'pending' | 'confirmed' | 'preparing' | 'ready_for_pickup' | 'out_for_delivery' | 'delivered' | 'cancelled';
+  status: 'pending' | 'confirmed' | 'ready_for_pickup' | 'out_for_delivery' | 'delivered' | 'cancelled';
   timestamp: string;
 }
 
