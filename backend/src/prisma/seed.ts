@@ -573,11 +573,21 @@ async function main() {
   ];
 
   for (const restaurantData of menuData) {
+    // Get the restaurant by name
+    const restaurant = await prisma.restaurant.findUnique({
+      where: { name: restaurantData.restaurantId },
+    });
+
+    if (!restaurant) {
+      console.error(`Restaurant not found: ${restaurantData.restaurantId}`);
+      continue;
+    }
+
     for (const categoryData of restaurantData.categories) {
       // Try to find existing category, if not found create it
       let category = await prisma.menuCategory.findFirst({
         where: {
-          restaurantId: restaurantData.restaurantId,
+          restaurantId: restaurant.id,
           name: categoryData.name,
         },
       });
@@ -585,7 +595,7 @@ async function main() {
       if (!category) {
         category = await prisma.menuCategory.create({
           data: {
-            restaurantId: restaurantData.restaurantId,
+            restaurantId: restaurant.id,
             name: categoryData.name,
             description: categoryData.description,
             order: categoryData.order,
@@ -596,7 +606,7 @@ async function main() {
       for (const itemData of categoryData.items) {
         await prisma.menuItem.create({
           data: {
-            restaurantId: restaurantData.restaurantId,
+            restaurantId: restaurant.id,
             categoryId: category.id,
             name: itemData.name,
             description: itemData.description,
