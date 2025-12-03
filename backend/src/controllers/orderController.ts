@@ -405,8 +405,7 @@ export const updateOrderStatus = async (req: Request, res: Response) => {
     // Validate status transition
     const validTransitions: Record<string, string[]> = {
       pending: ['confirmed', 'cancelled'],
-      confirmed: ['preparing', 'cancelled'],
-      preparing: ['ready_for_pickup', 'out_for_delivery', 'cancelled'],
+      confirmed: ['ready_for_pickup', 'cancelled'],
       ready_for_pickup: ['out_for_delivery', 'delivered'],
       out_for_delivery: ['delivered'],
       delivered: [],
