@@ -108,8 +108,6 @@ export function OrderManagement() {
         return 'bg-yellow-100 text-yellow-800';
       case 'confirmed':
         return 'bg-blue-100 text-blue-800';
-      case 'preparing':
-        return 'bg-purple-100 text-purple-800';
       case 'ready_for_pickup':
         return 'bg-indigo-100 text-indigo-800';
       case 'out_for_delivery':
@@ -140,7 +138,7 @@ export function OrderManagement() {
       {/* Filter Buttons */}
       <div className="bg-white rounded-lg shadow-md p-4 mb-6">
         <div className="flex gap-2 flex-wrap">
-          {['all', 'pending', 'confirmed', 'preparing', 'delivered', 'cancelled'].map((status) => (
+          {['all', 'pending', 'confirmed', 'ready_for_pickup', 'out_for_delivery', 'delivered', 'cancelled'].map((status) => (
             <button
               key={status}
               onClick={() => setFilter(status)}

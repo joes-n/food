@@ -10,8 +10,7 @@ interface OrderTrackerProps {
 const statusSteps = [
   { key: 'pending', label: 'Order Placed', description: 'Your order has been placed' },
   { key: 'confirmed', label: 'Confirmed', description: 'Restaurant confirmed your order' },
-  { key: 'preparing', label: 'Preparing', description: 'Restaurant is preparing your food' },
-  { key: 'ready_for_pickup', label: 'Ready', description: 'Order is ready' },
+  { key: 'ready_for_pickup', label: 'Ready', description: 'Order is ready for pickup or delivery' },
   { key: 'out_for_delivery', label: 'Out for Delivery', description: 'Your order is on the way' },
   { key: 'delivered', label: 'Delivered', description: 'Order delivered successfully' },
 ];

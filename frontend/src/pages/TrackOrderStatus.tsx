@@ -10,7 +10,6 @@ import { useAuthStore } from '../store/authStore';
 const ACTIVE_STATUSES = new Set([
   'pending',
   'confirmed',
-  'preparing',
   'ready_for_pickup',
   'out_for_delivery',
 ]);
@@ -26,12 +25,7 @@ const STATUS_META: Record<string, { label: string; badge: string; description: s
   confirmed: {
     label: 'Confirmed',
     badge: 'bg-blue-100 text-blue-800',
-    description: 'Restaurant confirmed your order.',
-  },
-  preparing: {
-    label: 'Preparing',
-    badge: 'bg-primary-100 text-primary-800',
-    description: 'Chefs are cooking up your food.',
+    description: 'Restaurant confirmed your order. We\'ll start preparing it right away!',
   },
   ready_for_pickup: {
     label: 'Ready for pickup',
