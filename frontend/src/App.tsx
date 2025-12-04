@@ -14,6 +14,11 @@ import { RestaurantEdit } from './pages/owner/RestaurantEdit';
 import { MenuManagement } from './pages/owner/MenuManagement';
 import { OrderManagement } from './pages/owner/OrderManagement';
 import { Earnings } from './pages/owner/Earnings';
+import { DriverDashboard } from './pages/driver/DriverDashboard';
+import { DeliveryDetails } from './pages/driver/DeliveryDetails';
+import { DeliveryHistory } from './pages/driver/DeliveryHistory';
+import { DriverEarnings } from './pages/driver/DriverEarnings';
+import { DriverProfile } from './pages/driver/DriverProfile';
 import './App.css';
 
 function AppContent() {
@@ -39,6 +44,13 @@ function AppContent() {
           <Route path="/owner/menu" element={<MenuManagement />} />
           <Route path="/owner/orders" element={<OrderManagement />} />
           <Route path="/owner/earnings" element={<Earnings />} />
+          
+          {/* Driver Routes */}
+          <Route path="/driver/dashboard" element={<DriverDashboard />} />
+          <Route path="/driver/delivery/:id" element={<DeliveryDetails />} />
+          <Route path="/driver/history" element={<DeliveryHistory />} />
+          <Route path="/driver/earnings" element={<DriverEarnings />} />
+          <Route path="/driver/profile" element={<DriverProfile />} />
         </Routes>
       </main>
 

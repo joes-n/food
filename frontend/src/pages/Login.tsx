@@ -38,6 +38,8 @@ export function Login() {
         // Redirect based on user role
         if (response.data.user.role === 'restaurant_owner') {
           navigate('/owner/dashboard');
+        } else if (response.data.user.role === 'driver') {
+          navigate('/driver/dashboard');
         } else {
           navigate('/');
         }

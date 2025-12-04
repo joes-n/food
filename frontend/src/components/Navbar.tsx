@@ -101,6 +101,38 @@ export function Navbar() {
             </div>
           </div>
         )}
+
+        {/* Driver Navigation Tabs */}
+        {isAuthenticated && user?.role === 'driver' && (
+          <div className="border-t border-gray-200">
+            <div className="flex space-x-8 py-3">
+              <Link
+                to="/driver/dashboard"
+                className="text-[#ffffff] hover:text-[#10b981] font-medium"
+              >
+                Dashboard
+              </Link>
+              <Link
+                to="/driver/history"
+                className="text-[#ffffff] hover:text-[#10b981] font-medium"
+              >
+                History
+              </Link>
+              <Link
+                to="/driver/earnings"
+                className="text-[#ffffff] hover:text-[#10b981] font-medium"
+              >
+                Earnings
+              </Link>
+              <Link
+                to="/driver/profile"
+                className="text-[#ffffff] hover:text-[#10b981] font-medium"
+              >
+                Profile
+              </Link>
+            </div>
+          </div>
+        )}
       </div>
     </nav>
   );

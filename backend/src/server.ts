@@ -68,6 +68,7 @@ import orderManagementRoutes from './routes/orderManagementRoutes';
 import paymentRoutes from './routes/paymentRoutes';
 import uploadRoutes from './routes/uploadRoutes';
 import restaurantStatsRoutes from './routes/restaurantStatsRoutes';
+import driverRoutes from './routes/driverRoutes';
 
 app.get('/api/health', (req, res) => {
   res.json({
@@ -102,6 +103,7 @@ app.use('/api/orders/manage', orderManagementRoutes);
 app.use('/api/payment', paymentRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/stats', restaurantStatsRoutes);
+app.use('/api/driver', driverRoutes);
 
 // Socket.io connection handling
 io.on('connection', (socket) => {
@@ -125,9 +127,36 @@ io.on('connection', (socket) => {
     logger.info(`Socket ${socket.id} joined user room: ${userId}`);
   });
 
+  // Join driver room
+  socket.on('join-driver', (driverId: string) => {
+    socket.join(`driver-${driverId}`);
+    logger.info(`Socket ${socket.id} joined driver room: ${driverId}`);
+  });
+
   // Handle location updates from drivers
   socket.on('driver-location-update', (data: { orderId: string; lat: number; lng: number }) => {
     io.to(`order-${data.orderId}`).emit('location-update', data);
+    io.to(`order-${data.orderId}`).emit('driver-location-update', {
+      orderId: data.orderId,
+      lat: data.lat,
+      lng: data.lng,
+      timestamp: new Date()
+    });
+  });
+
+  // Handle delivery status updates
+  socket.on('delivery-status-update', (data: { orderId: string; restaurantId: string; status: string }) => {
+    io.to(`order-${data.orderId}`).emit('order-status-update', {
+      orderId: data.orderId,
+      status: data.status,
+      timestamp: new Date()
+    });
+    
+    io.to(`restaurant-${data.restaurantId}`).emit('order-status-update', {
+      orderId: data.orderId,
+      status: data.status,
+      timestamp: new Date()
+    });
   });
 
   // Disconnect
@@ -168,20 +197,31 @@ httpServer.listen(PORT, () => {
 });
 
 // Graceful shutdown
-process.on('SIGTERM', async () => {
-  logger.info('SIGTERM signal received: closing HTTP server');
-  httpServer.close(() => {
-    logger.info('HTTP server closed');
-  });
-  await prisma.$disconnect();
-  process.exit(0);
-});
+const gracefulShutdown = async (signal: string) => {
+  logger.info(`${signal} signal received: closing server`);
 
-process.on('SIGINT', async () => {
-  logger.info('SIGINT signal received: closing HTTP server');
-  httpServer.close(() => {
-    logger.info('HTTP server closed');
+  // Close Socket.io connections first
+  io.close(() => {
+    logger.info('Socket.io closed');
   });
-  await prisma.$disconnect();
-  process.exit(0);
-});
+
+  // Close HTTP server
+  httpServer.close(async () => {
+    logger.info('HTTP server closed');
+
+    // Disconnect Prisma
+    await prisma.$disconnect();
+    logger.info('Prisma disconnected');
+
+    process.exit(0);
+  });
+
+  // Force exit after 5 seconds if graceful shutdown fails
+  setTimeout(() => {
+    logger.error('Forced shutdown after timeout');
+    process.exit(1);
+  }, 5000);
+};
+
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
