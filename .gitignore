@@ -69,3 +69,5 @@ backend/prisma/migrations/
 
 # npm package lock files
 package-lock.json
+
+DRIVER_DASHBOARD_PLAN.md
