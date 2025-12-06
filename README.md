@@ -52,22 +52,30 @@ food-ordering-app/
 - ✅ Restaurant browsing & search
 - ✅ Menu browsing & shopping cart
 - ✅ Order placement
-- ✅ Payment integration (cards, wallets, cash)
+- ✅ Payment integration (cards, cash on delivery)
 - ✅ Order status tracking
-- ✅ Admin dashboard
+- ✅ Admin dashboard (basic)
 
 ### Phase 2
-- 🔲 Real-time driver tracking
-- 🔲 Reviews & ratings
-- 🔲 Promo codes
-- 🔲 Chat system
-- 🔲 Order scheduling
+- 🟡 Real-time driver tracking (backend implemented, UI limited)
+- 🔲 Reviews & ratings (database schema only)
+- 🔲 Promo codes (database schema only)
+- 🔲 Chat system (database schema only)
+- 🟡 Order scheduling (backend support, limited UI)
 - 🔲 Push notifications
 
 ### Phase 3
 - 🔲 Loyalty program
-- 🔲 Advanced analytics
+- 🟡 Advanced analytics (restaurant stats implemented)
 - 🔲 Mobile apps (iOS/Android)
+
+### Additional Implemented Features
+- ✅ Restaurant management (owner dashboard)
+- ✅ Driver management (driver dashboard)
+- ✅ Image upload for restaurant banners
+- ✅ Menu management (categories and items)
+- ✅ Order management for restaurants
+- ✅ Multi-role support (customer, restaurant_owner, driver, admin)
 
 ## Getting Started
 
