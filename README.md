@@ -141,6 +141,13 @@ npm run dev
 
 Frontend will run on http://localhost:3000
 
+### Seed Data & Test Accounts
+
+- Running `npm run prisma:seed` creates sample restaurants, menu items, and user accounts so you can explore the app immediately.
+- Restaurant owners can log in with emails like `pizza.palace@owner.com` (password: `password123`) to manage their own restaurants.
+- Customers can try `john.doe@example.com` / `password123` to browse menus and place orders.
+- See `ACCOUNTS.md` for the full list of seeded owners, customers, and restaurant IDs.
+
 ## Database Schema
 
 Main entities:
@@ -204,6 +211,14 @@ See `docs/DEPLOYMENT.md` for detailed deployment guide.
 3. Commit changes: `git commit -am 'Add new feature'`
 4. Push to branch: `git push origin feature/new-feature`
 5. Submit pull request
+
+## Additional Documentation
+
+- `SETUP.md` - Step-by-step local setup guide
+- `APP_REQUIREMENTS.md` - High-level feature requirements
+- `OWNER_DASHBOARD_GUIDE.md` - Restaurant owner workflows
+- `IMAGE_UPLOAD_GUIDE.md` - How banner uploads and validation work
+- `docs/` - API, database, and deployment references
 
 ## License
 
