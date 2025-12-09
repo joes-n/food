@@ -13,7 +13,7 @@ export function Checkout() {
   const [restaurant, setRestaurant] = useState<any>(null);
   const [restaurantLoading, setRestaurantLoading] = useState(true);
   const [formData, setFormData] = useState({
-    street: '',
+    street: 'HKMU Jockey Club Campus, 81 Chung Hau Street, Ho Man Tin, Kowloon',
     instructions: '',
     paymentMethod: 'cash_on_delivery' as 'card' | 'digital_wallet' | 'cash_on_delivery',
   });
