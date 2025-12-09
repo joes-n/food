@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
 import Stripe from 'stripe';
-import { prisma } from '../server';
+import prisma from '../lib/prisma';
 import { PaymentStatus } from '@prisma/client';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_dummy_key', {
   apiVersion: '2025-10-29.clover',
 });
 

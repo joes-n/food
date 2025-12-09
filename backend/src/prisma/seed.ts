@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import prisma from '../../prisma.config';
+import prisma from '../lib/prisma';
 
 async function main() {
   console.log('🌱 Starting database seed...');

@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import winston from 'winston';
-import prisma from '../prisma.config';
+import prisma from './lib/prisma';
 
 // Load environment variables
 dotenv.config();

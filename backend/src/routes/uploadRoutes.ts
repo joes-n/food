@@ -5,7 +5,7 @@ import multer from 'multer';
 import { upload } from '../utils/upload';
 import { authenticate } from '../middleware/auth';
 import { Request, Response } from 'express';
-import prisma from '../../prisma.config';
+import prisma from '../lib/prisma';
 
 const router = Router();
 

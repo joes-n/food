@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { prisma } from '../server';
+import prisma from '../lib/prisma';
 import { UserRole } from '@prisma/client';
 
 interface RegisterRequest {
