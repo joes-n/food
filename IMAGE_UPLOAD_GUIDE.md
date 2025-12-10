@@ -2,11 +2,11 @@
 
 This guide shows you how to upload banner images for restaurants using the new upload system with ownership validation.
 
-## 🔐 Ownership Validation
+## Ownership Validation
 
 **IMPORTANT**: Restaurant owners can only upload banners for their own restaurants. The system validates ownership before allowing uploads.
 
-## 🚀 Quick Start
+## Quick Start
 
 ### 1. Backend Setup (Already Done)
 
@@ -92,7 +92,7 @@ async function uploadBanner(file: File, restaurantId: string) {
 />
 ```
 
-## 📡 API Reference
+## API Reference
 
 ### Upload Endpoint
 
@@ -155,7 +155,7 @@ Example:
 <img src="http://localhost:5000/uploads/banner-123.jpg" alt="Banner" />
 ```
 
-## 🎨 Restaurant Banner Update Example
+## Restaurant Banner Update Example
 
 Here's a complete example of updating a restaurant's banner:
 
@@ -211,14 +211,14 @@ export function EditRestaurantBanner() {
 }
 ```
 
-## 🔧 File Requirements
+## File Requirements
 
 - **Formats**: JPEG, JPG, PNG, GIF, WebP
 - **Max Size**: 5MB
 - **Storage**: Files stored in `/backend/uploads/` directory
 - **Access**: Images accessible at `http://localhost:5000/uploads/<filename>`
 
-## 🛡️ Security Features
+## Security Features
 
 - ✅ File type validation (images only)
 - ✅ File size limits (5MB default)
@@ -226,7 +226,7 @@ export function EditRestaurantBanner() {
 - ✅ Authentication required for uploads
 - ✅ CORS enabled for frontend access
 
-## 📝 Restaurant Update Example
+## Restaurant Update Example
 
 To update a restaurant's banner after upload:
 
@@ -250,7 +250,7 @@ The banner URL is stored in the database and can be used in your restaurant card
 )}
 ```
 
-## 🎯 Testing Ownership Validation
+## Testing Ownership Validation
 
 ### Test Case 1: Authorized Upload
 1. Login as Mario Rossi: `pizza.palace@owner.com` / `password123`
@@ -264,7 +264,7 @@ The banner URL is stored in the database and can be used in your restaurant card
 3. Upload banner image
 4. ❌ Expected: Upload fails with 403 error
 
-## 🎯 Testing (General)
+## Testing (General)
 
 1. Start the backend server
 2. Login to get an authentication token
@@ -279,14 +279,14 @@ All uploads require authentication. Use any restaurant owner account:
 
 See [ACCOUNTS.md](./ACCOUNTS.md) for full list of accounts.
 
-## 📦 What's Included
+## What's Included
 
 - `src/utils/upload.ts` - Multer configuration
 - `src/routes/uploadRoutes.ts` - Upload endpoints
 - `src/services/uploadService.ts` - Frontend upload service
 - `src/components/ImageUpload.tsx` - Reusable upload component
 
-## 💡 Tips
+## Tips
 
 1. **Always validate on the client side** before uploading
 2. **Show upload progress** for better UX
