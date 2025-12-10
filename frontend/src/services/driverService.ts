@@ -58,7 +58,10 @@ export const driverService = {
     return response.data;
   },
 
-  async updateDeliveryStatus(deliveryId: string, status: string): Promise<{ success: boolean; message: string }> {
+  async updateDeliveryStatus(
+    deliveryId: string,
+    status: string
+  ): Promise<{ success: boolean; data: DeliveryAssignment; message: string }> {
     const response = await api.put(`/driver/deliveries/${deliveryId}/status`, { status });
     return response.data;
   },
