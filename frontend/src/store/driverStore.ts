@@ -18,8 +18,8 @@ interface DriverState {
   
   setStatus: (status: 'offline' | 'online' | 'busy') => Promise<void>;
   setLocation: (location: { lat: number; lng: number }) => void;
-  acceptDelivery: (deliveryId: string) => Promise<void>;
-  updateDeliveryStatus: (status: string) => Promise<void>;
+  acceptDelivery: (deliveryId: string) => Promise<DeliveryAssignment | null>;
+  updateDeliveryStatus: (deliveryId: string, status: string) => Promise<void>;
   loadAvailableDeliveries: () => Promise<void>;
   loadDeliveryHistory: () => Promise<void>;
   loadEarnings: () => Promise<void>;
@@ -55,40 +55,53 @@ export const useDriverStore = create<DriverState>((set, get) => ({
   acceptDelivery: async (deliveryId) => {
     set({ isLoading: true });
     try {
-      await driverService.acceptDelivery(deliveryId);
-      const delivery = get().availableDeliveries.find(d => d.id === deliveryId);
-      if (delivery) {
-        set({ 
-          currentDelivery: delivery,
-          availableDeliveries: get().availableDeliveries.filter(d => d.id !== deliveryId),
-          status: 'busy'
-        });
-      }
-      set({ isLoading: false });
+      const response = await driverService.acceptDelivery(deliveryId);
+      const accepted = response?.data;
+      const existing = get().availableDeliveries.find(d => d.id === deliveryId);
+
+      set({
+        currentDelivery: accepted || existing || null,
+        availableDeliveries: get().availableDeliveries.filter(d => d.id !== deliveryId),
+        status: 'busy',
+        isLoading: false
+      });
+      return accepted || existing || null;
     } catch (error) {
       set({ isLoading: false });
       throw error;
     }
   },
 
-  updateDeliveryStatus: async (status) => {
-    const currentDelivery = get().currentDelivery;
-    if (!currentDelivery) return;
-    
+  updateDeliveryStatus: async (deliveryId, status) => {
     set({ isLoading: true });
     try {
-      await driverService.updateDeliveryStatus(currentDelivery.id, status);
-      set({ 
-        currentDelivery: { ...currentDelivery, status },
-        isLoading: false 
+      const response = await driverService.updateDeliveryStatus(deliveryId, status);
+      const updatedStatus = response?.data?.status || status;
+      const updatedDelivery = response?.data
+        ? { ...response.data, status: updatedStatus }
+        : get().currentDelivery
+          ? { ...get().currentDelivery!, status: updatedStatus }
+          : null;
+
+      set((state) => {
+        const isCurrent = state.currentDelivery?.id === deliveryId;
+        const newHistory = state.deliveryHistory.some(d => d.id === deliveryId)
+          ? state.deliveryHistory.map(d => d.id === deliveryId ? { ...d, ...(updatedDelivery || { status }) } : d)
+          : updatedDelivery
+            ? [...state.deliveryHistory, updatedDelivery]
+            : state.deliveryHistory;
+
+        const currentData = updatedDelivery || state.currentDelivery || null;
+
+        return {
+          currentDelivery: isCurrent
+            ? (status === 'delivered' ? null : currentData)
+            : state.currentDelivery,
+          deliveryHistory: newHistory,
+          status: isCurrent && status === 'delivered' ? 'online' : state.status,
+          isLoading: false
+        };
       });
-      
-      if (status === 'delivered') {
-        set({ 
-          currentDelivery: null,
-          status: 'online'
-        });
-      }
     } catch (error) {
       set({ isLoading: false });
       throw error;
@@ -120,7 +133,8 @@ export const useDriverStore = create<DriverState>((set, get) => ({
   loadEarnings: async () => {
     try {
       const response = await driverService.getEarnings();
-      set({ earnings: response.data });
+      // driverService already unwraps axios response, so earnings are under response.data
+      set({ earnings: response.data ?? { total: 0, today: 0, week: 0, month: 0 } });
     } catch (error) {
       throw error;
     }
