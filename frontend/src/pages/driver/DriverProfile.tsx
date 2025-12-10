@@ -165,36 +165,6 @@ export function DriverProfile() {
         </div>
 
         <div className="lg:col-span-1">
-          <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-            <h2 className="text-xl font-bold mb-4">Statistics</h2>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <Package className="mr-2 text-blue-600" size={20} />
-                  <span>Total Deliveries</span>
-                </div>
-                <span className="font-bold text-lg">{user.totalDeliveries || 0}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <DollarSign className="mr-2 text-green-600" size={20} />
-                  <span>Total Earnings</span>
-                </div>
-                <span className="font-bold text-lg">${(user.totalEarnings || 0).toFixed(2)}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <DollarSign className="mr-2 text-purple-600" size={20} />
-                  <span>Avg per Delivery</span>
-                </div>
-                <span className="font-bold text-lg">
-                  ${user.totalDeliveries > 0 
-                    ? (user.totalEarnings / user.totalDeliveries).toFixed(2) 
-                    : '0.00'}
-                </span>
-              </div>
-            </div>
-          </div>
 
           <div className="bg-white rounded-lg shadow-md p-6">
             <h2 className="text-xl font-bold mb-4">Account Status</h2>
