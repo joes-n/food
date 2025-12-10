@@ -54,3 +54,17 @@ docker compose up --build
 - Frontend: `http://localhost:3000`
 
 If ports are busy, override the published ports in `docker-compose.yml` or change `PORT`/`CLIENT_URL` variables in `.env`.
+
+## Deploying on a Remote Server (AWS/DigitalOcean/VM)
+If running this on a remote server, you must update the URLs in the `.env` file to match the server's Public IP or Domain. **Localhost will not work for the frontend-to-backend connection.**
+
+Example `.env` for a server with IP `203.0.113.10`:
+
+```env
+# The URL the browser uses to reach the API
+VITE_API_URL=[http://203.0.113.10:5000/api](http://203.0.113.10:5000/api)
+VITE_SOCKET_URL=[http://203.0.113.10:5000](http://203.0.113.10:5000)
+
+# The URL the backend uses to redirect users (e.g. for Stripe/Email links)
+CLIENT_URL=[http://203.0.113.10:3000](http://203.0.113.10:3000)
+SERVER_URL=[http://203.0.113.10:5000](http://203.0.113.10:5000)

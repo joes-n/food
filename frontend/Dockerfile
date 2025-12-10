@@ -20,7 +20,7 @@ ENV VITE_APP_VERSION=$VITE_APP_VERSION
 
 RUN npm run build
 
-FROM node:18-alpine AS runner
+FROM node:22-alpine AS runner
 
 WORKDIR /app
 ENV NODE_ENV=production

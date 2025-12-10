@@ -4,6 +4,7 @@
 A food ordering and tracking platform.
 
 ## Documentation
+- `DOCKER-SETUP.md` for docker setup (recommended)
 - `SETUP.md` for step-by-step local setup
 - `ARCHITECTURE_AND_TECH_STACK.md` for design decisions
 - `IMAGE_UPLOAD_GUIDE.md` for banner uploads

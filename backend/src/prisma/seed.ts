@@ -621,7 +621,7 @@ async function main() {
 
   // Create some sample customers
   const customer1 = await prisma.user.upsert({
-    where: { email: 'john.doe@example.com' },
+    where: { email: 'john@example.com' },
     update: {},
     create: {
       email: 'john@example.com',
@@ -633,7 +633,7 @@ async function main() {
   });
 
   const customer2 = await prisma.user.upsert({
-    where: { email: 'jane.smith@example.com' },
+    where: { email: 'jane@example.com' },
     update: {},
     create: {
       email: 'jane@example.com',

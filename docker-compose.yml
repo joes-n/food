@@ -8,8 +8,6 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-food_user}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-food_password}
       POSTGRES_DB: ${POSTGRES_DB:-food_ordering_db}
-    ports:
-      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:

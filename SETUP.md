@@ -1,6 +1,7 @@
 # Setup Guide
 
-This guide will help you set up the food ordering app locally.
+This guide will help you set up the food ordering app locally.  
+We recommend you to set up the server in a docker. For more details, check out `DOCKER_SETUP.md`.
 
 ## Prerequisites
 
