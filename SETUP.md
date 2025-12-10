@@ -54,16 +54,14 @@ psql --version    # Should be 15 or higher
 
 3. **Configure environment variables**:
    ```bash
-CREATE DATABASE food_ordering_db;
-   CREATE USER food_user WITH ENCRYPTED PASSWORD 'your_password';
-   GRANT ALL PRIVILEGES ON DATABASE food_ordering_db TO food_user;
-   \q   cp .env.example .env
+   cp .env.example .env
    ```
    Edit `.env` file and update:
    ```env
    DATABASE_URL="postgresql://food_user:your_password@localhost:5432/food_ordering_db?schema=public"
    JWT_SECRET="your-secret-key-here-make-it-long-and-random"
    CLIENT_URL="http://localhost:3000"
+   # Optional: STRIPE_SECRET_KEY, EMAIL_* if you plan to use payments/emails
    ```
 
 4. **Generate Prisma client**:
@@ -110,7 +108,7 @@ CREATE DATABASE food_ordering_db;
    ```bash
    cp .env.example .env
    ```
-   The default values should work for local development.
+   The defaults point to `http://localhost:5000`; update `VITE_API_URL` / `VITE_SOCKET_URL` only if you changed the backend port or host.
 
 4. **Start development server**:
    ```bash
@@ -171,8 +169,7 @@ CREATE DATABASE food_ordering_db;
 
 1. **Backend changes**:
    - Edit files in `backend/src/`
-   - Server auto-restarts (nodemon)
-   - No need to rebuild
+   - `npm run dev` uses `tsx watch` to auto-restart
 
 2. **Frontend changes**:
    - Edit files in `frontend/src/`
@@ -210,7 +207,7 @@ After successful setup:
 1. Review database schema: `backend/prisma/schema.prisma`
 2. Check API routes: `backend/src/routes/`
 3. Examine frontend components: `frontend/src/components/`
-4. Review app features in `APP_REQUIREMENTS.md`
+4. Review app features in `REQUIREMENTS.md`
 
 ## Getting Help
 
@@ -226,7 +223,7 @@ When ready to deploy:
 2. Update `DATABASE_URL` in production environment
 3. Use `npm run build` for both backend and frontend
 4. Configure environment variables on hosting platform
-5. See `docs/DEPLOYMENT.md` for detailed guide
+5. See `docs/RAILWAY_DEPLOYMENT.md` for the current deployment guide
 
 ---
 
