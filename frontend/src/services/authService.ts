@@ -1,4 +1,5 @@
 import api from './api';
+import type { User, UserRole } from '../types/user';
 
 export interface LoginRequest {
   email: string;
@@ -9,18 +10,8 @@ export interface RegisterRequest {
   email: string;
   password: string;
   name: string;
-  role: 'customer' | 'restaurant_owner' | 'driver' | 'admin';
+  role: UserRole;
   phone?: string;
-}
-
-export interface User {
-  id: string;
-  email: string;
-  name: string;
-  role: 'customer' | 'restaurant_owner' | 'driver' | 'admin';
-  phone?: string;
-  avatar?: string;
-  createdAt: string;
 }
 
 export interface AuthResponse {
@@ -82,3 +73,5 @@ export const authService = {
     window.location.href = '/login';
   },
 };
+
+export type { User } from '../types/user';

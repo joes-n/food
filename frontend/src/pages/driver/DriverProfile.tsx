@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useAuthStore } from '../../store/authStore';
 import { useDriverStore } from '../../store/driverStore';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { User, Phone, Mail, Package, DollarSign, MapPin, Clock } from 'lucide-react';
 
 export function DriverProfile() {
@@ -184,7 +185,9 @@ export function DriverProfile() {
               <div className="flex items-center justify-between">
                 <span className="text-gray-600">Member Since</span>
                 <span className="font-semibold">
-                  {new Date(user.createdAt).toLocaleDateString()}
+                  {user.createdAt
+                    ? new Date(user.createdAt).toLocaleDateString()
+                    : 'Not available'}
                 </span>
               </div>
             </div>

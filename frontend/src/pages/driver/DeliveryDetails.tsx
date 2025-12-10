@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useDriverStore } from '../../store/driverStore';
 import { useAuthStore } from '../../store/authStore';
 import { trackingService } from '../../services/trackingService';
+import type { DeliveryAssignment } from '../../services/driverService';
 import { toast } from 'react-toastify';
 import { Package, MapPin, Phone, Clock, Navigation } from 'lucide-react';
 
@@ -11,7 +12,7 @@ export function DeliveryDetails() {
   const navigate = useNavigate();
   const driverStore = useDriverStore();
   const user = useAuthStore(state => state.user);
-  const [delivery, setDelivery] = useState<any>(null);
+  const [delivery, setDelivery] = useState<DeliveryAssignment | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
