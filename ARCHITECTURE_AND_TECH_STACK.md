@@ -83,22 +83,22 @@
                             │
                             │ HTTPS / WebSocket
                             │
-┌─────────────────────────────────────────────────────────┐
-│                    API Gateway                          │
-│                (Express.js Server)                      │
-│  ┌──────────────────────────────────────────────────┐   │
-│  │  REST Endpoints  │  WebSocket      │  Middleware     │   │
-│  │ - Auth           │ - Order status  │ - Validation    │   │
-│  │ - Restaurants    │ - Driver updates │ - CORS          │   │
-│  │ - Menus/Items    │ - Room joins     │ - Authentication │   │
-│  │ - Orders         │                 │ - Logging       │   │
-│  │ - Order mgmt     │                 │                 │   │
-│  │ - Payments       │                 │                 │   │
-│  │ - Stats          │                 │                 │   │
-│  │ - Drivers        │                 │                 │   │
-│  │ - Uploads        │                 │                 │   │
-│  └──────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────┐
+│                    API Gateway                           │
+│                (Express.js Server)                       │
+│ ┌──────────────────────────────────────────────────────┐ │
+│ │  REST Endpoints  │  WebSocket      │  Middleware     │ │
+│ │ - Auth           │ - Order status  │ - Validation    │ │
+│ │ - Restaurants    │ - Driver updates│ - CORS          │ │
+│ │ - Menus/Items    │ - Room joins    │ - Authentication│ │
+│ │ - Orders         │                 │ - Logging       │ │
+│ │ - Order mgmt     │                 │                 │ │
+│ │ - Payments       │                 │                 │ │
+│ │ - Stats          │                 │                 │ │
+│ │ - Drivers        │                 │                 | │
+│ │ - Uploads        │                 │                 │ │
+│ └──────────────────────────────────────────────────────┘ │
+└──────────────────────────────────────────────────────────┘
                             │
                             │
 ┌─────────────────────────────────────────────────────────┐
