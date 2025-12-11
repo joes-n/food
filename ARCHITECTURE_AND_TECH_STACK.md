@@ -6,9 +6,9 @@
 - **Runtime**: Node.js 18+
 - **Framework**: Express.js with TypeScript
 - **Language**: TypeScript (type safety, easier maintenance)
-- **Real-time**: Socket.io for real-time features (order tracking, chat, driver location)
+- **Real-time**: Socket.io for real-time features (order tracking, driver location)
 - **Authentication**: JWT (JSON Web Tokens)
-- **Validation**: Zod or Joi for request validation
+- **Validation**: Zod for request validation
 - **Environment**: Node.js with npm/yarn
 
 ### Frontend (Web)
@@ -20,7 +20,7 @@
 - **Styling**: Tailwind CSS (utility-first CSS framework)
 - **UI Components**: Custom components (no UI library used)
 - **Real-time**: Socket.io-client
-- **Maps**: Google Maps API or Leaflet (for driver location)
+- **Maps**: (planned) Google Maps API or Leaflet for driver location
 
 ### Database
 - **Database**: PostgreSQL 15
@@ -40,7 +40,7 @@
 - **Environment Variables**: dotenv
 - **Logging**: Winston
 - **File Uploads**: Multer (for restaurant images)
-- **Email**: Nodemailer
+- **Email**: Nodemailer (config stub, not wired yet)
 - **Date/Time**: date-fns
 
 #### Frontend Libraries
@@ -55,8 +55,8 @@
 - **Linting**: ESLint
 - **Formatting**: Prettier
 - **Type Checking**: TypeScript compiler
-- **API Testing**: Postman or Thunder Client
-- **Git Hooks**: Husky + lint-staged
+- **Automated Testing**: Jest + ts-jest + Supertest (backend)
+- **API Testing**: Postman or Thunder Client (manual)
 
 ### Deployment (Future)
 - **Backend Hosting**: Heroku, Railway, or DigitalOcean App Platform
@@ -76,9 +76,9 @@
 │                     Client Layer                        │
 │  ┌──────────────┐                                       │
 │  │   Web App    │  (React + Vite + Tailwind)            │
-│  │   (React)    │  - Customer Interface                 │
-│  └──────────────┘  - Owner Dashboard                    │
-│                    - Admin Features                     │
+│  │   (React)    │  - Customer interface                 │
+│  └──────────────┘  - Owner/Admin/Driver dashboards      │
+│                    - Real-time order tracking           │
 └─────────────────────────────────────────────────────────┘
                             │
                             │ HTTPS / WebSocket
@@ -87,13 +87,16 @@
 │                    API Gateway                          │
 │                (Express.js Server)                      │
 │  ┌──────────────────────────────────────────────────┐   │
-│  │  REST Endpoints  │  WebSocket  │  Middleware     │   │
-│  │ - Auth           │ - Tracking  │ - Validation    │   │
-│  │ - Orders         │ - Chat      │ - CORS          │   │
-│  │ - Restaurants    │ - Location  │ - Authenticaiton│   │
-│  │ - Menu/Items     │ - Status    │                 │   │
-│  │ - Payment        │   Updates   │                 │   │
-│  │ - Stats          │             │                 │   │
+│  │  REST Endpoints  │  WebSocket      │  Middleware     │   │
+│  │ - Auth           │ - Order status  │ - Validation    │   │
+│  │ - Restaurants    │ - Driver updates │ - CORS          │   │
+│  │ - Menus/Items    │ - Room joins     │ - Authentication │   │
+│  │ - Orders         │                 │ - Logging       │   │
+│  │ - Order mgmt     │                 │                 │   │
+│  │ - Payments       │                 │                 │   │
+│  │ - Stats          │                 │                 │   │
+│  │ - Drivers        │                 │                 │   │
+│  │ - Uploads        │                 │                 │   │
 │  └──────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────┘
                             │
@@ -101,8 +104,8 @@
 ┌─────────────────────────────────────────────────────────┐
 │                 Business Logic Layer                    │
 │  ┌─────────────┐ ┌─────────────┐ ┌──────────────────┐   │
-│  │ Controllers │ │   Direct    │ │    Middleware    │   │
-│  │ (HTTP)      │ │   Prsima    │ │  (Authorization, │   │
+│  │ Controllers │ │   Prisma    │ │    Middleware    │   │
+│  │ (HTTP/WS)   │ │   Client    │ │  (Authorization, │   │
 │  │ (Business   │ │   Access    │ │    Validation)   │   │
 │  │  Logic)     │ │             │ │                  │   │
 │  └─────────────┘ └─────────────┘ └──────────────────┘   │
@@ -113,10 +116,10 @@
 │                    Data Access Layer                    │
 │                      (Prisma ORM)                       │
 │  ┌──────────────────────────────────────────────────┐   │
-│  │  Prisma Client (Direct Database Access)          │   │
+│  │  Prisma Client (backend/src/lib/prisma.ts)       │   │
 │  │  - Type-safe queries                             │   │
-│  │  - Migrations                                    │   │
-│  │  - No caching layer                              │   │
+│  │  - Migrations in backend/prisma                  │   │
+│  │  - No caching layer yet                          │   │
 │  └──────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────┘
                             │
@@ -125,8 +128,8 @@
 │                  External Services                      │
 │  ┌─────────────┐ ┌─────────────┐ ┌──────────────────┐   │
 │  │  Payments   │ │  Email/SMS  │ │     Maps API     │   │
-│  │  (Stripe)   │ │ (SendGrid/  │ │  (Google Maps)   │   │
-│  │             │ │  Nodemailer)│ │                  │   │
+│  │  (Stripe)   │ │ (SMTP-ready │ │  (planned)       │   │
+│  │             │ │  config)    │ │                  │   │
 │  └─────────────┘ └─────────────┘ └──────────────────┘   │
 └─────────────────────────────────────────────────────────┘
 ```
@@ -182,24 +185,26 @@ Additional Models:
 ## Project Structure
 
 ```
-food-ordering-app/
+food/
 │
 ├── backend/                     # Express.js API server
 │   ├── src/
 │   │   ├── controllers/        # Route handlers (business logic)
-│   │   ├── services/           # (Not used - logic in controllers)
-│   │   ├── middleware/         # Custom middleware
+│   │   ├── middleware/         # Auth, validation helpers
 │   │   ├── routes/             # API routes
-│   │   ├── prisma/             # Database schema & migrations
-│   │   │   ├── schema.prisma   # Database schema
-│   │   │   ├── migrations/     # SQL migrations
+│   │   ├── prisma/             # Database seed script
 │   │   │   └── seed.ts         # Database seeding
+│   │   ├── lib/                # Prisma client and shared libs
+│   │   ├── utils/              # Utility functions + validations
 │   │   ├── types/              # TypeScript type definitions
-│   │   ├── utils/              # Utility functions
+│   │   ├── tests/              # Jest unit/integration tests
 │   │   └── server.ts           # Main server file
-│   ├── package.json
-│   ├── tsconfig.json
-│   └── tsconfig.prod.json
+│   ├── prisma/                 # Database schema & migrations
+│   │   ├── schema.prisma       # Database schema
+│   │   └── migrations/         # SQL migrations
+│   ├── uploads/                # Uploaded assets
+│   ├── logs/                   # Application logs
+│   └── package.json
 │
 ├── frontend/                    # React web application
 │   ├── src/
@@ -207,18 +212,21 @@ food-ordering-app/
 │   │   ├── pages/              # Page components
 │   │   │   ├── admin/          # Admin interface
 │   │   │   ├── owner/          # Restaurant owner dashboard
+│   │   │   ├── driver/         # Driver workflows
 │   │   │   ├── Home.tsx        # Customer homepage
 │   │   │   ├── RestaurantList.tsx
 │   │   │   ├── RestaurantDetail.tsx
 │   │   │   ├── Cart.tsx
 │   │   │   ├── Checkout.tsx
 │   │   │   ├── OrderTracking.tsx
-│   │   │   └── auth/           # Auth pages
+│   │   │   └── TrackOrderStatus.tsx
+│   │   ├── contexts/           # React context providers
 │   │   ├── hooks/              # Custom React hooks
-│   │   ├── services/           # API service functions
+│   │   ├── services/           # API + socket clients
 │   │   ├── store/              # State management (Zustand)
 │   │   │   ├── authStore.ts    # Authentication state
-│   │   │   └── cartStore.ts    # Shopping cart state
+│   │   │   ├── cartStore.ts    # Shopping cart state
+│   │   │   └── driverStore.ts  # Driver state
 │   │   ├── types/              # TypeScript types
 │   │   ├── utils/              # Utility functions
 │   │   ├── App.tsx
@@ -234,12 +242,14 @@ food-ordering-app/
 ├── shared/                      # Shared types and utilities
 │   └── types/                   # Common TypeScript types
 │
+├── docs/                        # Documentation
+│   ├── API.md
+│   ├── DATABASE.md
+│   ├── RAILWAY_DEPLOYMENT.md
+│   ├── ...user flow sequences
+│   └── Additional guides
 ├── uploads/                     # User uploaded files
-├── logs/                        # Application logs
-└── docs/                       # Documentation
-    ├── API.md
-    ├── DATABASE.md
-    └── DEPLOYMENT.md
+└── logs/                        # Application logs
 ```
 
 ---
@@ -250,7 +260,7 @@ food-ordering-app/
 - ✅ **Mainstream & Popular**: Large community support, plenty of resources
 - ✅ **JavaScript/TypeScript Everywhere**: Consistent language across frontend and backend
 - ✅ **Modern Tooling**: Vite for fast development, Prisma for type-safe database access
-- ✅ **Real-time Ready**: Socket.io perfect for order tracking and chat
+- ✅ **Real-time Ready**: Socket.io for order tracking and driver updates
 - ✅ **Developer Experience**: Hot reload, TypeScript IntelliSense, great debugging
 - ✅ **Scalable**: Can handle growth if needed
 - ✅ **Cost-Effective**: Most tools are free or have generous free tiers
@@ -260,7 +270,7 @@ food-ordering-app/
 - ⚠️ **Database Choice**: PostgreSQL requires more setup than Firebase
 - ⚠️ **No Abstraction Layer**: Controllers handle business logic directly without service layer
 - ⚠️ **No Caching**: No Redis or caching layer for performance optimization
-- ⚠️ **Monolithic Frontend**: Single React app for all user types (customers, owners, admin)
+- ⚠️ **Monolithic Frontend**: Single React app for all user types (customers, owners, admin, drivers)
 
 ---
 
@@ -271,19 +281,20 @@ food-ordering-app/
 2. ✅ Database schema designed with Prisma
 3. ✅ Authentication system implemented (JWT)
 4. ✅ Core CRUD operations for restaurants, menu, orders
-5. ✅ Real-time features with Socket.io (order tracking, location)
-6. ✅ React frontend (customer + owner + admin views)
+5. ✅ Real-time features with Socket.io (order tracking, driver location)
+6. ✅ React frontend (customer + owner + admin + driver views)
 7. ✅ File upload handling (images, banners)
 8. ✅ Payment integration (Stripe)
 9. ✅ Winston logging
 10. ✅ Zod validation
+11. ✅ Backend automated tests with Jest + ts-jest + Supertest
 
 ### Future Enhancements 🔄
 1. Add Redis cache layer for performance
 2. Implement service layer for better separation of concerns
 3. Add repository pattern for data access abstraction
 4. Develop mobile app (React Native)
-5. Add comprehensive test suite
+5. Expand automated test coverage (additional backend flows + frontend)
 6. Implement CI/CD pipeline
 7. Add monitoring and analytics
 8. Scale with message queues for async processing
